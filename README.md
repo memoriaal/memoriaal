@@ -4,8 +4,8 @@
     - Baasis tuleb hoida ka isikuid, kes on ühe- või teise represseerituga seotud
     aga ise pole represseeritud;
     - Ühte isikut võidi represseerida mitmel korral,
-    siis koondame isikuandmed "*Isik*" mõiste alla ja repressiooniga seotud info
-    "*Repressioon*" mõiste alla. Päringute tõhustamiseks saab vajadusel *Isik*u
+    siis koondame isikuandmed "Isik" mõiste alla ja repressiooniga seotud info
+    "Repressioon" mõiste alla. Päringute tõhustamiseks saab vajadusel "Isiku"
     juurde lisada tuletistunnuseid.
 
     Kuna oluline osa andmetest on pärit Memento raamatutest, siis kindlasti tuleb
@@ -29,7 +29,7 @@
 - Haridus
 
 #### Tuletistunnused
-- Kanda Memoriaalile ("Jah/Ei/Teadmata")
+- Kanda Memoriaalile | "Jah/Ei/Teadmata"
 - Elukoht enne küüditamist
 - Märksõna edasise saatuse kohta:
     - Surnud
@@ -62,9 +62,9 @@
 ### Sugulus
 Isik on suguluses sugulasega:
 
-- Isik | Viide *Isik*u kirjele
+- Isik | Viide **Isik**u kirjele
 - Sugulus | "vanem", "laps", "vanavanem", "lapselaps", "õde/vend", "abikaasa/elukaaslane"
-- Sugulane | Viide *Isik*u kirjele
+- Sugulane | Viide **Isik**u kirjele
 
 
     Perekond on hägusam mõiste. Näide on mul omast käest võtta; isa kuulub minu
@@ -82,12 +82,12 @@ Isik on suguluses sugulasega:
 
 ### Repressioon
 - Paragrahv
-- Memento | Viide *Memento* kirjele
+- Memento | Viide **Memento** kirjele
 - Kuupäev
-- Seotud isikud | Viited *Isik*utele
+- Seotud isikud | Viited **Isik**utele
 
 
 ### Leibkond
-- Isikud | Viited *Isik*utele
-- Perekonnapea | Viide *Isik*ule
+- Isikud | Viited **Isik**utele
+- Perekonnapea | Viide **Isik**ule
 - Repressioon | Viide defineerivale repressioonile
