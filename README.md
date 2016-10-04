@@ -1,5 +1,7 @@
 # Memoriaali andmemudel
 
+## Isik
+
     Keskne objekt on represseeritu. Et:
     - Baasis tuleb hoida ka isikuid, kes on ühe- või teise represseerituga seotud
     aga ise pole represseeritud;
@@ -11,9 +13,6 @@
     Kuna oluline osa andmetest on pärit Memento raamatutest, siis kindlasti tuleb
     säilitada ka originaalkirjed võimalikult autentsel kujul. Memento kirjele saab
     lisada seotud isikuid kas otse või *Repressioon*'i kaudu
-
-
-### Isik
 
 #### Isikuandmed
 - Eesnimi
@@ -43,10 +42,7 @@
     - ...
 
 
-### Memento
-- Kirje tekst
-- Raamat
-
+## Memento
     Et andmestik pakuks enamat huvi uurijatele, tasub kirja panna ka kõikvõimalikke
     isikutevahelisi seoseid:
     - sugulus;
@@ -58,20 +54,25 @@
     Seosed tuleb luua kahepidised (paarikaupa) ja iga seose juures viidata vastavale
     Memento kirjele (või mõnele muule allikale, kust info pärineb).
 
+- Kirje tekst
+- Raamat  
 
-### Sugulus
-Isik on suguluses sugulasega:
+
+## Sugulus
+    Isik on suguluses sugulasega:
 
 - Isik | Viide **Isik**u kirjele
 - Sugulus | "vanem", "laps", "vanavanem", "lapselaps", "õde/vend", "abikaasa/elukaaslane"
 - Sugulane | Viide **Isik**u kirjele
 
 
+## Perekond
     Perekond on hägusam mõiste. Näide on mul omast käest võtta; isa kuulub minu
     perekonda ja mina kuulun oma isa perekonda, tema uus naine kuulub tema perekonda
     ja ei kuulu minu perekonda.
     Seega pole mul hektel head ettepanekut "perekonna defineerimiseks"
 
+## Leibkond
     Leibkond on veidi konkreetsem mõiste ja siin andmestikus on otstarbekas vaadelda
     leibkondi käsikäes repressiooniga, mis leibkonna lõhkus või küüditas. Ehk siis
     Iga repressiooniga saab siduda rühma inimesi, kes tol hetkel ühes elasid.
@@ -80,14 +81,14 @@ Isik on suguluses sugulasega:
     Tihtipeale on leibkonnal võimalik kindlaks teha ka perekonnapea (miks see oluline on?)
 
 
-### Repressioon
+## Repressioon
 - Paragrahv
 - Memento | Viide **Memento** kirjele
 - Kuupäev
 - Seotud isikud | Viited **Isik**utele
 
 
-### Leibkond
+## Leibkond
 - Isikud | Viited **Isik**utele
 - Perekonnapea | Viide **Isik**ule
 - Repressioon | Viide defineerivale repressioonile
