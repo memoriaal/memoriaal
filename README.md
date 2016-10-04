@@ -69,7 +69,7 @@
 - Sugulane | Viide **Isik**u kirjele
 
 
-### Perekond
+## Perekond
     Perekond on hägusam mõiste. Näide on mul omast käest võtta; isa kuulub minu
     perekonda ja mina kuulun oma isa perekonda, tema uus naine kuulub tema perekonda
     ja ei kuulu minu perekonda.
