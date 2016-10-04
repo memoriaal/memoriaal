@@ -43,6 +43,7 @@
 
 
 ## Memento
+
     Et andmestik pakuks enamat huvi uurijatele, tasub kirja panna ka kõikvõimalikke
     isikutevahelisi seoseid:
     - sugulus;
@@ -54,11 +55,13 @@
     Seosed tuleb luua kahepidised (paarikaupa) ja iga seose juures viidata vastavale
     Memento kirjele (või mõnele muule allikale, kust info pärineb).
 
+
+### Memento
 - Kirje tekst
 - Raamat  
 
 
-## Sugulus
+### Sugulus
     Isik on suguluses sugulasega:
 
 - Isik | Viide **Isik**u kirjele
@@ -66,7 +69,7 @@
 - Sugulane | Viide **Isik**u kirjele
 
 
-## Perekond
+### Perekond
     Perekond on hägusam mõiste. Näide on mul omast käest võtta; isa kuulub minu
     perekonda ja mina kuulun oma isa perekonda, tema uus naine kuulub tema perekonda
     ja ei kuulu minu perekonda.
