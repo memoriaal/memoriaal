@@ -80,15 +80,14 @@
     muutis oluliselt kõiki leibkonna liikmeid.
     Tihtipeale on leibkonnal võimalik kindlaks teha ka perekonnapea (miks see oluline on?)
 
-
-## Repressioon
+### Repressioon
 - Paragrahv
 - Memento | Viide **Memento** kirjele
 - Kuupäev
 - Seotud isikud | Viited **Isik**utele
 
 
-## Leibkond
+### Leibkond
 - Isikud | Viited **Isik**utele
 - Perekonnapea | Viide **Isik**ule
 - Repressioon | Viide defineerivale repressioonile
