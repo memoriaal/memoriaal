@@ -1,0 +1,22 @@
+^\<b\>
+<nimi>
+
+
+\</b\>
+</b>
+
+
+^\<nimi\>(.*)\</b\>$
+<nimi>$1</nimi>
+
+
+
+<nimi>arr. </nimi>
+<nimi>küüdit. </nimi>
+<nimi>asum. </nimi>
+
+
+\</nimi\> , ([a-z õüäö]*),
+</nimi><sugulus>$1</sugulus>
+
+\</nimi\> ka [a-zõüõäö, ]*, 
