@@ -21,9 +21,20 @@ replace '(<nimi>.*?</)b>' '$1nimi>' 7."$outfile"
 
 cp 7."$outfile" 8."$outfile"
 replace '"' '\"' 8."$outfile"
-replace '<nimi>(.*)</nimi>(.*)' '{"nimi":"$1","kirje":"$2"},' 8."$outfile"
+
+cp 8."$outfile" "$filenumber".json
+replace '<nimi>(.*)</nimi>(.*)' '{"nimi":"$1","kirje":"$2"},' "$filenumber".json
 
 
+rm   "$outfile"
+rm 1."$outfile"
+rm 2."$outfile"
+rm 3."$outfile"
+rm 4."$outfile"
+rm 5."$outfile"
+rm 6."$outfile"
+rm 7."$outfile"
+rm 8."$outfile"
 
 \</nimi\> , ([a-z õüäö]*),
 </nimi><sugulus>$1</sugulus>
