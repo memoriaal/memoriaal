@@ -1,11 +1,12 @@
 #! /bin/bash
 
-filenumber=6-5
+npm install replace -g
+
+filenumber=6-2
 infile="$filenumber"-in.txt
 outfile="$filenumber".txt
 cp "$infile" "$outfile"
 
-npm install replace -g
 cp "$infile" "$outfile"
 sed 's/\<b\>[aA]rr\. *\<\/b\>/arr\. /g' "$outfile" > 1."$outfile"
 sed 's/\<b\>[kK]üüdit. *\<\/b\>/küüdit. /g' 1."$outfile" > 2."$outfile"
@@ -22,11 +23,12 @@ replace '(<nimi>.*?</)b>' '$1nimi>' 7."$outfile"
 cp 7."$outfile" 8."$outfile"
 replace '"' '\"' 8."$outfile"
 
-cp 8."$outfile" "$filenumber".json
-replace '<nimi>(.*)</nimi>(.*)' '{"nimi":"$1","kirje":"$2"},' "$filenumber".json
+cp 8."$outfile" "$outfile"
+
+# cp 8."$outfile" "$filenumber".json
+# replace '<nimi>(.*)</nimi>(.*)' '{"nimi":"$1","kirje":"$2"},' "$filenumber".json
 
 
-rm   "$outfile"
 rm 1."$outfile"
 rm 2."$outfile"
 rm 3."$outfile"
