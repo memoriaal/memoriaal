@@ -1,4 +1,5 @@
 var fs = require('fs')
+var util = require('util')
 
 Object.defineProperty(global, '__stack', {
   get: function() {
