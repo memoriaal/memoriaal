@@ -1,7 +1,12 @@
 # Memento raamatute import
 
 ## Impordi sammud
-1. Alusena kasutasin memento 6. raamatu PDF'i kodulehelt
+
+### Failide esmane ettevalmistamine
+
+Automaatsed suuremahulised failimuudatused andmete ühtlustamiseks ja veamustrite leidmiseks.
+
+1. Alusena kasutasin Memento 6. raamatu PDF'i kodulehelt
 2. Meelise arvutis kopipaste pdf->word  
    Tulemuseks [neli .docx dokumenti](https://github.com/memoriaal/memoriaal/tree/master/memento/in)
 3. Meelise arvutis asendus boldis tekst -> <b>boldis tekst</b>
@@ -9,6 +14,10 @@
 5. Unixi masinas käivitatud skript [regex.sh](https://github.com/memoriaal/memoriaal/blob/master/memento/in/regex.sh)
    tulemuseks fail [memento.yaml](https://github.com/memoriaal/memoriaal/blob/master/memento/memento.yaml)
 
+
+### Andmete destilleerimine
+
+Node skript märgistamaks perekondi, sugulust, aliaseid, rahvust jne.
 
 ## Tuvastatud ebakõlad
 
