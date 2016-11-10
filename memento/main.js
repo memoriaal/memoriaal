@@ -39,11 +39,11 @@ isikud.forEach(function(isik) {
 
   // Tapetud isikud
   ;((isik) => {
-    let re = /(surn\.|otsus täide viidud|surnud|tapetud)/
+    let re = /((surn\.|otsus täide viidud|surnud|tapetud)[ \.0123456789]*)/
     let match = re.exec(isik.kirje)
     if (isik.kirje.match(re) !== null) {
       tapetud.push(isik)
-      isik.tapetud = match[0]
+      isik.tapetud = match[1]
     }
   })(isik)
 })
