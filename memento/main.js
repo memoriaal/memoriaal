@@ -39,16 +39,20 @@ isikud.forEach(function(isik) {
 
   // Tapetud isikud
   ;((isik) => {
-    let re = /((surn\.|otsus täide viidud|surnud|tapetud)[ \.0123456789]*)/
+    let re = /(((surn|otsus täide viidud|mõrv|surnud|tapetud)[a-zA-Z \.]*)([\.0123456789]*))/
     let match = re.exec(isik.kirje)
     if (isik.kirje.match(re) !== null) {
       tapetud.push(isik)
-      isik.tapetud = match[1]
+      // isik.tapetud = match
+      isik.tapetud = []
+      isik.tapetud.push(match[2].replace(/[ \.]*$/,''))
+      isik.tapetud.push(match[4].replace(/[ \.]*$/,''))
+      // isik.tapetud = match[1].replace(/[ \.]*$/,'')
     }
   })(isik)
 })
 
-let tapetudY = YAML.stringify(tapetud)
+let tapetudY = YAML.stringify(tapetud, 1, 4)
 fs.writeFileSync('tapetud.yaml', tapetudY)
 
 let isikudY = YAML.stringify(isikud)
