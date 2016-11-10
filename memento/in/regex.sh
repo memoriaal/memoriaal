@@ -2,7 +2,7 @@
 
 # npm install replace -g
 
-declare -a arr=("6-2" "6-3" "6-4" "6-5")
+declare -a arr=("6-1" "6-2" "6-3" "6-4" "6-5")
 touch memento.txt
 rm memento.txt
 
@@ -45,7 +45,7 @@ do
 
 done
 
-sed $'s/\<mid\>/- memento id: /g' m.txt > m.id.txt
+sed $'s/\<mid\>/- memento: /g' m.txt > m.id.txt
 sed $'s/\<\/mid\>\<nimi\>/\\\n  nimi: /g' m.id.txt > m.nimi.txt
 sed $'s/\<\/nimi\>/\\\n  kirje: /g' m.nimi.txt > memento.yaml
 
