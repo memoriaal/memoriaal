@@ -11,12 +11,12 @@ var isikud = YAML.load('memento.yaml')
 const sugulused = YAML.load('sugulused.yaml')
 var hukkunud = []
 
-var perekond = isikud[0]['memento id']
+var perekond = isikud[0].memento
 isikud.forEach(function(isik) {
   isik.kirje = String(isik.kirje)
   let perenimi = isik.nimi.split(',')[0]
   if (perenimi === perenimi.toUpperCase()) {
-    perekond = isik['memento id']
+    perekond = isik.memento
   }
   isik.perekond = perekond
 
@@ -37,16 +37,9 @@ isikud.forEach(function(isik) {
     if (match !== null) { isik['sünd'] = match[1] }
   })(isik)
 
-  // Allikaviited
-  ;((isik) => {
-    let re = /\[(.*)\]/
-    let match = re.exec(isik.kirje)
-    if (match !== null) { isik.allikad = match[1].split(',').map(function(a){return a.trim()}) }
-  })(isik)
-
   // Hukkunud isikud
   ;((isik) => {
-    let re = /(((otsus täide viidud|mõrva|sur[mn]|tapetud)[a-zA-ZÕÜÄÖõüäö \-\.]*)([\.0123456789]*))/
+    let re = /(((otsus täide viidud|mõrva|[Ss]ur[mn]|tapetud)[a-zA-ZÕÜÄÖõüäö \-\.]*)([\.0123456789]*))/
     let match = re.exec(isik.kirje)
     if (isik.kirje.match(re) !== null) {
       hukkunud.push(isik)
@@ -57,6 +50,30 @@ isikud.forEach(function(isik) {
       // isik.hukkunud = match[1].replace(/[ \.]*$/,'')
     }
   })(isik)
+
+  // Arreteerimised
+  ;((isik) => {
+    let re = /(arr\.) ?([\.0123456789]*)/g
+    let match = re.exec(isik.kirje)
+    // if (match !== null) { isik.arreteerimised = match }
+    if (match !== null) { isik.arreteerimised = [match[1], match[2]] }
+  })(isik)
+
+  // Vabanemised
+  ;((isik) => {
+    let re = /(vab\. asum\.) ?([\.0123456789]*)/g
+    let match = re.exec(isik.kirje)
+    // if (match !== null) { isik.arreteerimised = match }
+    if (match !== null) { isik.vabanemised = [match[1], match[2]] }
+  })(isik)
+
+  // Allikaviited
+  ;((isik) => {
+    let re = /\[(.*)\]/
+    let match = re.exec(isik.kirje)
+    if (match !== null) { isik.allikad = match[1].split(',').map(function(a){return a.trim()}) }
+  })(isik)
+
 })
 
 let hukkunudY = YAML.stringify(hukkunud, 3, 4)
