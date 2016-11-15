@@ -12,17 +12,18 @@ do
   outfile="$filenumber".txt
   cp "$infile" "$outfile"
 
-  sed 's/\<b\>[aA]rr\. *\<\/b\>/arr\. /g' "$outfile" > 1."$outfile"
-  sed 's/\<b\>[kK]üüdit. *\<\/b\>/küüdit. /g' 1."$outfile" > 2."$outfile"
-  sed 's/\<b\>[aA]sum. *\<\/b\>/asum. /g' 2."$outfile" > 3."$outfile"
-  sed 's/^\<b\>/\<nimi\>/g' 3."$outfile" > 4."$outfile"
+  gsed -r 's_((. )|^|<b>)[aA]rr(et(eeriti|\.)|\.) ?($|</b>)?_\2arr. _g' "$outfile" > 1."$outfile"
+  gsed -r 's_<b>[kK](ü|u\u0308){1,2}d(\.|it(\.|ati)) ?($|</b>)_küüdit. _g' 1."$outfile" > 2."$outfile"
+  gsed -r 's_<b>[aA]sum. ?($|</b>)_asum. _g' 2."$outfile" > 3."$outfile"
+  gsed -r 's_^<b>_<nimi>_g' 3."$outfile" > 4."$outfile"
 
   tr '\n' ' ' < 4."$outfile" > 5."$outfile"
   sed $'s/\<nimi\>/\\\n\<nimi\>/g' 5."$outfile" | tail -n +2 > 6."$outfile"
 
   cp 6."$outfile" 7."$outfile"
-  replace '<b>(.*?)</b>' '$1' 7."$outfile"
   replace '(<nimi>.*?</)b>' '$1nimi>' 7."$outfile"
+  replace '<b>' '' 7."$outfile"
+  replace '</b>' '' 7."$outfile"
 
   cp 7."$outfile" 8."$outfile"
   replace '"' '\"' 8."$outfile"
