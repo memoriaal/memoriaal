@@ -7,6 +7,24 @@ const YAML = require('yamljs')
 
 const logger = require(path.resolve(__dirname, 'logging.js'))('out.log')
 
+let csvstream = fs.createWriteStream('isikud.csv')
+const csvWrite = function csvWrite(isik) {
+  csvstream.write( ''
+    +   '"' + isik.memento + '"'
+    + ', "' + isik.nimi + '"'
+    + ', "' + isik.perekond + '"'
+    + ', "' + isik['sünd'] + '"'
+    + ', "' + isik.hukkunud + '"'
+    + ', "' + isik['küüditamine'] + '"'
+    + ', "' + isik.arreteerimine + '"'
+    + ', "' + isik.vabanemine + '"'
+    + ', "' + isik.allikad + '"'
+    + ', "' + isik.kirje + '"'
+    + ', "' + isik.kasutamataKirjeosa + '"'
+    + '\n'
+  )
+}
+
 const guessDate = function guessDate(datestring) {
   // make sure we only have numbers and '.' or '-' in our datestring
   if (datestring === '') { return ['No date', datestring] }
@@ -42,8 +60,8 @@ var hukkunud = []
 
 var perekond = isikud[0].memento
 isikud.forEach(function(isik) {
-  isik.kasutamataKirjeosa = '@NIMI@' + String(isik.kirje)
-  isik.kirje = isik.nimi + String(isik.kirje)
+  isik.kasutamataKirjeosa = '@NIMI@ ' + String(isik.kirje)
+  isik.kirje = isik.nimi + ' ' + String(isik.kirje)
 
   let perenimi = isik.nimi.split(',')[0]
   if (perenimi === perenimi.toUpperCase()) {
@@ -59,7 +77,7 @@ isikud.forEach(function(isik) {
       let re = new RegExp('[ ,]' + sugulus + '[ ,]','')
       if (re.test(isik.kasutamataKirjeosa)) {
         isik.sugulus = sugulus
-        isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@SUGULUS@')
+        isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, ' @SUGULUS@ ')
       }
     })
   }
@@ -140,7 +158,7 @@ isikud.forEach(function(isik) {
     if (isik.allikad) isik.allikad = isik.allikad.join('; ')
   })(isik)
 
-
+  csvWrite(isik)
 })
 
 let hukkunudY = YAML.stringify(hukkunud, 3, 4)
