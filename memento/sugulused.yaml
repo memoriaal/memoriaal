@@ -1,44 +1,22 @@
-- õetütar
-- õepoeg
-- õemees
-- õde
-- võõrasisa
-- võõrasema
-- vennatütar
-- vennapoeg
-- vennanaine
 - venna abikaasa, tütar
 - venna abikaasa poeg
 - venna abikaasa
-- vend
-- vanaema
 - tütretütre tütar
-- tütretütar
 - tütrepoeg
 - tütre ämm
 - tütre laps
 - tütre abikaasa
-- tütar
-- tädi
 - teenija
 - talupidaja
 - talu teenija
 - sugulusandmeid pole
 - sugulane
-- poolvend
-- pojatütar
-- pojapoeg
 - poja laps
-- poja elukaaslane
 - poja abikaasa ema
 - poja abikaasa
 - poja abik.
-- poeg
 - onunaine
-- onu
 - naiseema
-- lapselaps
-- laps
 - lahutatud abikaasa
 - lahutatud
 - kasuõde
@@ -46,22 +24,13 @@
 - kasutütre poolõde
 - kasutütre poeg
 - kasutütar, ka Mosin, 1934, mitte küüditatud. [106
-- kasutütar
 - kasupoja tütar
 - kasupoja poeg
 - kasupoja abikaasa
-- kasupoeg
-- kasuisa
-- kasuema
-- isa
-- emaema
-- ema õde
-- ema
 - elukaaslase tütar
 - elukaaslase poeg
 - elukaaslase isa
 - elukaaslase ema
-- elukaaslane
 - eksabikaasa
 - adopteeritud tütre poeg
 - adopteeritud tütar
@@ -79,6 +48,8 @@
 - abikaasa tütar
 - abikaasa pojatütar
 - abikaasa poja elukaaslane
+- poja elukaaslane
+- elukaaslane
 - abikaasa poeg
 - abikaasa laps
 - abikaasa isa
@@ -86,3 +57,32 @@
 - abikaasa ema
 - abikaasa
 - abi kaasa vennapoeg
+- poeg
+- tütar
+- ema õde
+- ema
+- isa
+- onu
+- tädi
+- õde
+- vend
+- vennapoeg
+- vennanaine
+- tütretütar
+- lapselaps
+- laps
+- õetütar
+- õepoeg
+- õemees
+- võõrasisa
+- võõrasema
+- vennatütar
+- kasutütar
+- kasupoeg
+- kasuisa
+- kasuema
+- emaema
+- vanaema
+- poolvend
+- pojatütar
+- pojapoeg
