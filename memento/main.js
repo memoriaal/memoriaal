@@ -11,19 +11,42 @@ let csvstream = fs.createWriteStream('isikud.csv')
 const csvWrite = function csvWrite(isik) {
   csvstream.write( ''
     +   '"' + isik.memento + '"'
-    + ', "' + isik.nimi + '"'
     + ', "' + isik.perekond + '"'
+    + ', "' + isik.nimi + '"'
+    + ', "' + isik.nimekujud + '"'
     + ', "' + isik['sünd'] + '"'
-    + ', "' + isik.hukkunud + '"'
+    + ', "' + isik.sugulus + '"'
+    + ', "' + isik.rahvus + '"'
+    + ', "' + isik.haridus + '"'
     + ', "' + isik['küüditamine'] + '"'
     + ', "' + isik.arreteerimine + '"'
     + ', "' + isik.vabanemine + '"'
+    + ', "' + isik.surmaotsus + '"'
+    + ', "' + isik.hukkunud + '"'
     + ', "' + isik.allikad + '"'
     + ', "' + isik.kirje + '"'
     + ', "' + isik.kasutamataKirjeosa + '"'
     + '\n'
   )
 }
+csvWrite({
+  memento: 'memento',
+  perekond: 'perekond',
+  nimi: 'nimi',
+  nimekujud: 'nimekujud',
+  sünd: 'sünd',
+  sugulus: 'sugulus',
+  rahvus: 'rahvus',
+  haridus: 'haridus',
+  küüditamine: 'küüditamine',
+  arreteerimine: 'arreteerimine',
+  vabanemine: 'vabanemine',
+  surmaotsus: 'surmaotsus',
+  hukkunud: 'hukkunud',
+  allikad: 'allikad',
+  kirje: 'kirje',
+  kasutamataKirjeosa: 'kasutamataKirjeosa'
+})
 
 const guessDate = function guessDate(datestring) {
   // make sure we only have numbers and '.' or '-' in our datestring
@@ -184,7 +207,6 @@ isikud.forEach(function(isik) {
     let re = /@NIMI@([^0-9]+)([0-9][0-9\.]+)/
     let match = re.exec(isik.kasutamataKirjeosa)
     if (match !== null) {
-      // console.log(match);
       // isik['sünd'] = match
       isik['sünd'] = guessDate(match[2])[0]
       isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@NIMI@$1@SÜND@')
@@ -227,7 +249,6 @@ isikud.forEach(function(isik) {
     let re = /(@NIMI@[, ;\.]*(?:@SUGULUS@[, ;\.]*)*)((?:(?:in|en)\.?)? ?ka[^@]*)((?:@RAHVUS@[, ;\.]*)*(?:@SÜND@[, ;\.]*)*)/
     let match = re.exec(isik.kasutamataKirjeosa)
     if (match !== null) {
-      console.log(match);
       isik['nimekujud'] = match[2]
       isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '$1 @NIMEKUJU@ $3')
     }
