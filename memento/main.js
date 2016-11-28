@@ -32,7 +32,8 @@ const guessDate = function guessDate(datestring) {
 
   const guessYear = function(yearstring) {
     if (Number(yearstring) > 1850) { return yearstring }
-    else { return '19' + yearstring }
+    if (yearstring.length === 2) { return '19' + yearstring }
+    return '-'
   }
 
   datestring = datestring.replace(/[\. ]*$/, '')
@@ -54,8 +55,9 @@ const guessDate = function guessDate(datestring) {
   return[returndate, datestring]
 }
 
-var isikud = YAML.load('memento.yaml')
+var isikud = YAML.load('in/memento.yaml')
 const sugulused = YAML.load('sugulused.yaml')
+const rahvused = YAML.load('rahvused.yaml')
 var hukkunud = []
 
 var perekond = isikud[0].memento
@@ -82,6 +84,15 @@ isikud.forEach(function(isik) {
     })
   }
 
+  // Rahvus
+  rahvused.forEach(function(rahvus) {
+    let re = new RegExp('[ ,]' + rahvus + '[ ,]','')
+    if (re.test(isik.kasutamataKirjeosa)) {
+      isik.rahvus = rahvus.toLowerCase()
+      isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, ' @RAHVUS@ ')
+    }
+  })
+
   // mitte küüditatud
   ;((isik) => {
     let re = /(mitte küüditatud|küüditamata)/
@@ -92,9 +103,19 @@ isikud.forEach(function(isik) {
     }
   })(isik)
 
+  // surmaotsus
+  ;((isik) => {
+    let re = /([Ss]urmaotsus\.?)/
+    let match = re.exec(isik.kasutamataKirjeosa)
+    if (match !== null) {
+      isik['surmaotsus'] = '+'
+      isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@SURMAOTSUS@')
+    }
+  })(isik)
+
   // Sünd
   ;((isik) => {
-    let re = /s\. ([0-9\.]*)/
+    let re = /\b[Ss]\. ([0-9\.]*)/
     let match = re.exec(isik.kasutamataKirjeosa)
     if (match !== null) {
       isik['sünd'] = guessDate(match[1])[0]
@@ -116,7 +137,7 @@ isikud.forEach(function(isik) {
   // Küüditamised
   ;((isik) => {
     // paraku saab ü tähte esitada enam kui ühel moel
-    let re = /(k(ü|u\u0308){1,2}dit(\.|ati)) ?([\.0123456789]*)/g
+    let re = /(k(ü|u\u0308){1,2}dit(\.|ati)) +([\.0123456789]*)/g
     while (match = re.exec(isik.kasutamataKirjeosa)) {
       if (!isik['küüditamine']) { isik['küüditamine'] = [] }
       isik['küüditamine'].push(guessDate(match[4])[0])
@@ -157,6 +178,68 @@ isikud.forEach(function(isik) {
     }
     if (isik.allikad) isik.allikad = isik.allikad.join('; ')
   })(isik)
+
+  // Sünd 2.
+  ;((isik) => {
+    let re = /@NIMI@([^0-9]+)([0-9][0-9\.]+)/
+    let match = re.exec(isik.kasutamataKirjeosa)
+    if (match !== null) {
+      // console.log(match);
+      // isik['sünd'] = match
+      isik['sünd'] = guessDate(match[2])[0]
+      isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@NIMI@$1@SÜND@')
+    }
+  })(isik)
+
+  // Haridus
+  ;((isik) => {
+    let re = /([1-9]{1,2}) ?kl[\.,;]* ?/g
+    while (match = re.exec(isik.kasutamataKirjeosa)) {
+      if (isik.haridus) { isik.haridus += (', ' + match[1] + ' kl.') }
+      else { isik.haridus = match[1] + ' kl.' }
+    }
+    isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@HARIDUS@')
+  })(isik)
+  ;((isik) => {
+    let re = /(kõrgh|kõrgh|keskh)(ar){0,1}[\., ]*/g
+    while (match = re.exec(isik.kasutamataKirjeosa)) {
+      if (isik.haridus) { isik.haridus += ', ' + match[1] + '.' }
+      else { isik.haridus = match[1] + '.' }
+    }
+    isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@HARIDUS@')
+  })(isik)
+
+  // Erinõukogu otsus ja paragraf
+  ;((isik) => {
+    let re = /[Ee]rin\. *([0-9\.]{4,8}) *§ *((?:[0-9\-]+[, ]*)+)([a-zA-Z]+)/g
+    while (match = re.exec(isik.kasutamataKirjeosa)) {
+      if (!isik.erin) { isik.erin = [] }
+      isik.erin.push({
+        otsus: guessDate(match[1])[0],
+        paragrahv: match[2]
+      })
+    }
+    isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@ERIN@ $3')
+  })(isik)
+
+  // Nimekujud
+  ;((isik) => {
+    let re = /(@NIMI@[, ;\.]*(?:@SUGULUS@[, ;\.]*)*)((?:(?:in|en)\.?)? ?ka[^@]*)((?:@RAHVUS@[, ;\.]*)*(?:@SÜND@[, ;\.]*)*)/
+    let match = re.exec(isik.kasutamataKirjeosa)
+    if (match !== null) {
+      console.log(match);
+      isik['nimekujud'] = match[2]
+      isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '$1 @NIMEKUJU@ $3')
+    }
+  })(isik)
+
+
+  // Liigsed märgid teekide vahel
+  ;((isik) => {
+    let re = /([A-ZÕÜÄÖ]@)[, ;\.]*(@[A-ZÕÜÄÖ])/g
+    isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '$1 $2')
+  })(isik)
+
 
   csvWrite(isik)
 })
