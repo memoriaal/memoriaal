@@ -2,6 +2,7 @@
 
 # npm install replace -g
 
+# declare -a arr=("6-1" "6-5")
 declare -a arr=("6-1" "6-2" "6-3" "6-4" "6-5")
 touch memento.txt
 rm memento.txt
@@ -12,13 +13,13 @@ do
   outfile="$filenumber".txt
   cp "$infile" "$outfile"
 
-  gsed -r 's_((. )|^|<b>)[aA]rr(et(eeriti|\.)|\.) ?($|</b>)?_\2arr. _g' "$outfile" > 1."$outfile"
-  gsed -r 's_<b>[kK](ü|u\u0308){1,2}d(\.|it(\.|ati)) ?($|</b>)_küüdit. _g' 1."$outfile" > 2."$outfile"
-  gsed -r 's_<b>[aA]sum. ?($|</b>)_asum. _g' 2."$outfile" > 3."$outfile"
-  gsed -r 's_^<b>_<nimi>_g' 3."$outfile" > 4."$outfile"
+  sed -r 's_((. )|^|<b>)[aA]rr(et(eeriti|\.)|\.) ?($|</b>)?_\2arr. _g' "$outfile" > 1."$outfile"
+  sed -r 's_<b>[kK](ü|u\u0308){1,2}d(\.|it(\.|ati)) ?($|</b>)_küüdit. _g' 1."$outfile" > 2."$outfile"
+  sed -r 's_<b>[aA]sum. ?($|</b>)_asum. _g' 2."$outfile" > 3."$outfile"
+  sed -r 's_^<b>_<nimi>_g' 3."$outfile" > 4."$outfile"
 
   tr '\n' ' ' < 4."$outfile" > 5."$outfile"
-  sed $'s/\<nimi\>/\\\n\<nimi\>/g' 5."$outfile" | tail -n +2 > 6."$outfile"
+  sed $'s/<nimi>/\\\n<nimi>/g' 5."$outfile" | tail -n +2 > 6."$outfile"
 
   cp 6."$outfile" 7."$outfile"
   replace '(<nimi>.*?</)b>' '$1nimi>' 7."$outfile"
@@ -46,9 +47,9 @@ do
 
 done
 
-sed $'s/\<mid\>/- memento: /g' m.txt > m.id.txt
-sed $'s/\<\/mid\>\<nimi\>/\\\n  nimi: /g' m.id.txt > m.nimi.txt
-sed $'s/\<\/nimi\>/\\\n  kirje: /g' m.nimi.txt > memento.yaml
+sed $'s/<mid>/- memento: /g' m.txt > m.id.txt
+sed $'s/<\/mid><nimi>/\\\n  nimi: /g' m.id.txt > m.nimi.txt
+sed $'s/<\/nimi>/\\\n  kirje: /g' m.nimi.txt > memento.yaml
 
 rm m.txt
 rm m.id.txt
