@@ -148,7 +148,7 @@ isikud.forEach(function(isik) {
 
   // Hukkunud isikud
   ;((isik) => {
-    let re = /(((otsus t(ä|a\u0308)ide viidud|m[õõ]rv[a\.]|[Ss]urn|tapetud)[a-zA-ZÕÜÄÖõüäö \-\.]*)([\.0123456789]*))/
+    let re = /(((otsus t(ä|a\u0308)ide viidud|m[õõ]rv[a\.]|\b[Ss]urn|\b[Ss]uri\b|tapetud)[a-zA-ZÕÜÄÖõüäö \-\.]*)([\.0123456789]*))/
     let match = re.exec(isik.kasutamataKirjeosa)
     if (match !== null) {
       hukkunud.push(isik)
