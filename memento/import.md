@@ -24,3 +24,5 @@ Node skript märgistamaks perekondi, sugulust, aliaseid, rahvust jne.
 - raamat 6 peatükk 2
   - AST, Vilbert, Friedrich,
     Perekonnaliikmete isanimed pole boldis
+  - GOLDBERG, Leizer, Schapsel
+    Sünnikuupäevas "1891" asemel "189l"
