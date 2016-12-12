@@ -10,27 +10,33 @@ const logger = require(path.resolve(__dirname, 'logging.js'))('out.log')
 let csvstream = fs.createWriteStream('isikud.csv')
 const csvWrite = function csvWrite(isik) {
   csvstream.write( ''
-    +   '"' + isik.memento + '"'
-    + ', "' + isik.perekond + '"'
-    + ', "' + isik.nimi + '"'
-    + ', "' + isik.nimekujud + '"'
-    + ', "' + isik['sünd'] + '"'
-    + ', "' + isik.sugulus + '"'
-    + ', "' + isik.rahvus + '"'
-    + ', "' + isik.haridus + '"'
-    + ', "' + isik['küüditamine'] + '"'
-    + ', "' + isik.arreteerimine + '"'
-    + ', "' + isik.vabanemine + '"'
-    + ', "' + isik.surmaotsus + '"'
-    + ', "' + isik.hukkunud + '"'
-    + ', "' + isik.allikad + '"'
-    + ', "' + isik.kirje + '"'
-    + ', "' + isik.kasutamataKirjeosa + '"'
+    +   '"' + ( isik.memento            ? isik.memento             : '' )+ '"'
+    + ', "' + ( isik['sünniaasta']      ? isik['sünniaasta']       : '' )+ '"'
+    + ', "' + ( isik.perekond           ? isik.perekond            : '' )+ '"'
+    + ', "' + ( isik.nimi               ? isik.nimi                : '' )+ '"'
+    + ', "' + ( isik.nimekujud          ? isik.nimekujud           : '' )+ '"'
+    + ', "' + ( isik['sünd']            ? isik['sünd']             : '' )+ '"'
+    + ', "' + ( isik.sugulus            ? isik.sugulus             : '' )+ '"'
+    + ', "' + ( isik.rahvus             ? isik.rahvus              : '' )+ '"'
+    + ', "' + ( isik.haridus            ? isik.haridus             : '' )+ '"'
+    + ', "' + ( isik['küüditamine']     ? isik['küüditamine']      : '' )+ '"'
+    + ', "' + ( isik.arreteerimine      ? isik.arreteerimine       : '' )+ '"'
+    + ', "' + ( isik.vabanemine         ? isik.vabanemine          : '' )+ '"'
+    + ', "' + ( isik.surmaotsus         ? isik.surmaotsus          : '' )+ '"'
+    + ', "' + ( isik.hukkunud           ? isik.hukkunud            : '' )+ '"'
+    + ', "' + ( isik.kasVabanenud       ? isik.kasVabanenud        : '' )+ '"'
+    + ', "' + ( isik.kasHukkunud        ? isik.kasHukkunud         : '' )+ '"'
+    + ', "' + ( isik.kasMitteküüditatud ? isik.kasMitteküüditatud  : '' )+ '"'
+    + ', "' + ( isik.kasSaatusTeadmata  ? isik.kasSaatusTeadmata   : '' )+ '"'
+    + ', "' + ( isik.allikad            ? isik.allikad             : '' )+ '"'
+    + ', "' + ( isik.kirje              ? isik.kirje               : '' )+ '"'
+    + ', "' + ( isik.kasutamataKirjeosa ? isik.kasutamataKirjeosa  : '' )+ '"'
     + '\n'
   )
 }
 csvWrite({
   memento: 'memento',
+  sünniaasta: 'sünniaasta',
   perekond: 'perekond',
   nimi: 'nimi',
   nimekujud: 'nimekujud',
@@ -43,6 +49,10 @@ csvWrite({
   vabanemine: 'vabanemine',
   surmaotsus: 'surmaotsus',
   hukkunud: 'hukkunud',
+  kasVabanenud: 'kasVabanenud',
+  kasHukkunud: 'kasHukkunud',
+  kasMitteküüditatud: 'kasMitteküüditatud',
+  kasSaatusTeadmata: 'kasSaatusTeadmata',
   allikad: 'allikad',
   kirje: 'kirje',
   kasutamataKirjeosa: 'kasutamataKirjeosa'
@@ -50,12 +60,15 @@ csvWrite({
 
 const guessDate = function guessDate(datestring) {
   // make sure we only have numbers and '.' or '-' in our datestring
-  if (datestring === '') { return ['No date', datestring] }
+  if (datestring === '') { return ['0000', datestring] }
   if (!/^[\.0123456789\-]*$/.test(datestring)) { return ['Can\'t convert', datestring] }
 
   const guessYear = function(yearstring) {
     if (Number(yearstring) > 1850) { return yearstring }
-    if (yearstring.length === 2) { return '19' + yearstring }
+    if (yearstring.length === 2) {
+      if (Number(yearstring) > 50) { return '18' + yearstring }
+      return '19' + yearstring
+    }
     return '-'
   }
 
@@ -78,10 +91,10 @@ const guessDate = function guessDate(datestring) {
   return[returndate, datestring]
 }
 
-var isikud = YAML.load('in/memento.yaml')
+var isikud = YAML.load('memento.yaml')
 const sugulused = YAML.load('sugulused.yaml')
 const rahvused = YAML.load('rahvused.yaml')
-var hukkunud = []
+// var hukkunud = []
 
 var perekond = isikud[0].memento
 isikud.forEach(function(isik) {
@@ -124,6 +137,17 @@ isikud.forEach(function(isik) {
       isik['mitte küüditatud'] = '+'
       isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@MITTEKÜÜDITATUD@')
     }
+    isik.kasMitteküüditatud = match ? "1" : "0"
+  })(isik)
+
+  // saatus teadmata
+  ;((isik) => {
+    let re = /\b[a-zA-Z]*(ine saatus teadmata|aatus teadmata)/
+    let match = re.exec(isik.kasutamataKirjeosa)
+    if (match !== null) {
+      isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@SAATUSTEADMATA@')
+    }
+    isik.kasSaatusTeadmata = match ? "1" : "0"
   })(isik)
 
   // surmaotsus
@@ -140,6 +164,7 @@ isikud.forEach(function(isik) {
   ;((isik) => {
     let re = /\b[Ss]\. ([0-9\.]*)/
     let match = re.exec(isik.kasutamataKirjeosa)
+    isik['sünniaasta'] = match ? guessDate(match[1])[0].slice(0,4) : '0000'
     if (match !== null) {
       isik['sünd'] = guessDate(match[1])[0]
       isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@SÜND@')
@@ -151,10 +176,11 @@ isikud.forEach(function(isik) {
     let re = /(((otsus t(ä|a\u0308)ide viidud|m[õõ]rv[a\.]|\b[Ss]urn|\b[Ss]uri\b|tapetud)[a-zA-ZÕÜÄÖõüäö \-\.]*)([\.0123456789]*))/
     let match = re.exec(isik.kasutamataKirjeosa)
     if (match !== null) {
-      hukkunud.push(isik)
+      // hukkunud.push(isik)
       isik.hukkunud = guessDate(match[5])[0]
       isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@HUKKUNUD@')
     }
+    isik.kasHukkunud = isik.hukkunud ? "1" : "0"
   })(isik)
 
   // Küüditamised
@@ -187,7 +213,10 @@ isikud.forEach(function(isik) {
       if (!isik.vabanemine) { isik.vabanemine = [] }
       isik.vabanemine.push(guessDate(match[2])[0])
     }
-    if (isik.vabanemine) isik.vabanemine = isik.vabanemine.join('; ')
+    isik.kasVabanenud = isik.vabanemine ? "1" : "0"
+    if (isik.vabanemine) {
+      isik.vabanemine = isik.vabanemine.join('; ')
+    }
     isik.kasutamataKirjeosa = isik.kasutamataKirjeosa.replace(re, '@VABANENUD@')
   })(isik)
 
@@ -265,8 +294,8 @@ isikud.forEach(function(isik) {
   csvWrite(isik)
 })
 
-let hukkunudY = YAML.stringify(hukkunud, 3, 4)
-fs.writeFileSync('hukkunud.yaml', hukkunudY)
+// let hukkunudY = YAML.stringify(hukkunud, 3, 4)
+// fs.writeFileSync('hukkunud.yaml', hukkunudY)
 
 let isikudY = YAML.stringify(isikud, 3, 2)
 fs.writeFileSync('rich_memento.yaml', isikudY)
