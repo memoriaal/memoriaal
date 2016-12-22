@@ -25,7 +25,8 @@ fs.access(BOOK + '.txt', (err) => {
           return console.log(err)
         }
         PARANDUSED.simple.forEach(function(parandus) {
-          data = data.replace(parandus.f, parandus.t)
+          let re = new RegExp(parandus.f, 'g')
+          data = data.replace(re, parandus.t)
         })
         fs.writeFile(filename, data, 'utf8', function (err) {
            if (err) return console.log(err)
@@ -47,23 +48,23 @@ const readConvertedFile = function(filename) {
 
   let pages = {}
   let raw_lines = []
-  let skip_line = false
+  let skip_line_after_pagenum = false
   let page_number_re = /^ {0,120}([0-9]{1,3})$/
 
   lineReader.on('line', function (line) {
-    if (skip_line) {
-      skip_line = false
+    if (skip_line_after_pagenum) {
+      skip_line_after_pagenum = false
       return
     }
     if (line === '') { return }
 
     let match = page_number_re.exec(line)
     if (match) {
-      skip_line = true
+      skip_line_after_pagenum = true
       let page_number = match[1]
       process.stdout.cursorTo(0)
       process.stdout.write('page_number: ' + page_number)
-      pages[page_number] = {n:page_number, lines:merge_page(raw_lines)}
+      pages[page_number] = {n:page_number, lines:mergePage(raw_lines)}
       raw_lines = []
       return
     }
@@ -75,7 +76,7 @@ const readConvertedFile = function(filename) {
 
   lineReader.on('close', function (line) {
     console.log('converted ' + Object.keys(pages).length + ' pages from pdf.')
-    read_records(pages)
+    readRecords(pages)
     // console.log(isikud.length)
   })
 
@@ -83,9 +84,9 @@ const readConvertedFile = function(filename) {
 
 
 
-let csvstream = fs.createWriteStream('isikud.csv')
+const CSVSTREAM = fs.createWriteStream('isikud.csv')
 const csvWrite = function csvWrite(isik) {
-  csvstream.write( ''
+  CSVSTREAM.write( ''
     +   '"' + ( isik.memento            ? isik.memento             : '' ) + '"'
     + ', "' + ( isik.perenimi           ? isik.perenimi            : '' ) + '"'
     + ', "' + ( isik.eesnimi            ? isik.eesnimi             : '' ) + '"'
@@ -114,14 +115,8 @@ const leftPad = function(i) {
   return pad.substring(0, pad.length - i.length) + i.toString()
 }
 
-let leftstream = fs.createWriteStream('left.txt')
-let rightstream = fs.createWriteStream('right.txt')
-let stopit = false
 
-var isikud = []
-
-
-const merge_page = function(raw_lines) {
+const mergePage = function(raw_lines) {
 
   function findSplit(raw_lines, log) {
     let positionMap = []
@@ -180,7 +175,8 @@ const merge_page = function(raw_lines) {
   return lefthalf.concat(righthalf)
 }
 
-const read_records = function(pages) {
+
+const readRecords = function(pages) {
 
   const joinr = function(record, line) {
     let re = /[^0-9]-$/
@@ -204,19 +200,27 @@ const read_records = function(pages) {
       if (re.test(line)) {
         record = record.replace( /  +/g, ' ' )
         PARANDUSED.newline.forEach(function(parandus) {
-          record = record.replace(parandus.f, parandus.t)
+          let re = new RegExp(parandus.f, 'g')
+          record = record.replace(re, parandus.t)
         })
-        leftstream.write(record + '\n')
+        // leftstream.write(record + '\n')
         record = record.split('\n')
-        records.concat(record)
+        records = records.concat(record)
         record = ''
       }
     })
   })
+  parseRecords(records)
 }
 
 
-
+var isikud = []
+const parseRecords = function(records) {
+  let i = 1
+  records.forEach(function(record) {
+    logger.log(record, i++)
+  })
+}
 
 const parse_line = function(line) {
   if (line === '') { return }
