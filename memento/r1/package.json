@@ -1,0 +1,31 @@
+{
+  "name": "convert",
+  "version": "0.0.1",
+  "description": "Memento seitsmenda raamatu konverter",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/memoriaal/memoriaal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/memoriaal/memoriaal/issues"
+  },
+  "keywords": [
+    "Memoriaal",
+    "EW100"
+  ],
+  "author": "Mihkel Putrinš",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.0.0-rc.5",
+    "debug": "^2.2.0",
+    "later": "^1.2.0",
+    "object-path": "^0.11.2",
+    "replace": "^0.3.0",
+    "yamljs": "^0.2.7"
+  }
+}
