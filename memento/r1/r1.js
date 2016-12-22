@@ -43,7 +43,7 @@ fs.access(BOOK + '.txt', (err) => {
 
 const readConvertedFile = function(filename) {
   const lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream(filename)
+    input: fs.createReadStream(filename)
   })
 
   let pages = {}
