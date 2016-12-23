@@ -7,6 +7,8 @@ const YAML = require('yamljs')
 
 const logger = require(path.resolve(__dirname, 'logging.js'))('out.log')
 const BOOK = 'r_1'
+const FIRST_PAGE = 78
+const LAST_PAGE = 709
 const PARANDUSED = YAML.load('parandused.yaml')
 const FIELDS = YAML.load('fields.yaml')
 const RECORD_PARSER_RE = new RegExp(
@@ -28,7 +30,7 @@ fs.access(BOOK + '.txt', (err) => {
     return;
   }
   var exec = require('child_process').exec
-  var cmd = 'pdftotext "' + BOOK + '.pdf" -nopgbrk -enc UTF-8 -f 78 -l 709 -layout'
+  var cmd = 'pdftotext "' + BOOK + '.pdf" -nopgbrk -enc UTF-8 -f ' + FIRST_PAGE + ' -l ' + LAST_PAGE + ' -layout'
   exec(cmd, function(error, stdout, stderr) {
     let filename = BOOK + '.txt'
     const cleanupConvertedFile = function(filename, callback) {
