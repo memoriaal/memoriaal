@@ -28,51 +28,56 @@
   label: Sünd
   default: ''
   ix: 5
-  re: 's\. ?([^ ]+) '
+  re: 's\. ?([0-9][^ ]+)? ?'
+- field: viit
+  label: Viit
+  default: ''
+  ix: 6
+  re: "(?:vt\\. (.*) \\.$)?"
 - field: sünnikoht
   label: Sünnikoht
   default: ''
-  ix: 6
+  ix: 7
   re: "(?:(.*?), )?"
 - field: elukoht
   label: Elukoht
   default: ''
-  ix: 7
+  ix: 8
   re: "(?:eluk\\. (.*?),? )?"
 - field: haridus
   label: Haridus
   default: ''
-  ix: 8
+  ix: 9
   re: "(?:([^ ]+haridus),? )?"
 - field: arreteerimine
   label: Arreteerimine
   default: ''
-  ix: 9
-  re: "(?:arr\\. ?([^ ]+),? )?"
+  ix: 10
+  re: "(?:(arr\\. ?[^ ]+),? )?"
 - field: kohus
   label: kohus
   default: ''
-  ix: 10
-  re: "(?:(?:trib|erin)\\. ?([^ ]+),? )?"
+  ix: 11
+  re: "(?:((?:trib|erin)\\. ?[^ ]+),? )?"
 - field: karistus
   label: Karistus
   default: ''
-  ix: 11
+  ix: 12
   re: "(?:(§[^;]+),? )?"
 - field: asumispaik
   label: Asumispaik
   default: ''
-  ix: 12
-  re: "(?:(.*?),? )?"
+  # ix: 12
+  # re: "(?:(.*?),? )?"
 - field: vabanemine
   label: Vabanemine
   default: ''
-  ix: 13
+  ix: 14
   re: "(?:vab\\. ?([^ ]+),? )?"
 - field: allikas
   label: Allikas
   default: ''
-  ix: 14
+  ix: 15
   re: "(?:(\\[[^\\]]+\\]))?"
 - field: sünniaasta
   label: Sünniaasta
@@ -92,8 +97,8 @@
 - field: kasutamataKirjeosa
   label: KasutamataKirjeosa
   default: ''
-  ix:
-  re:
+  ix: 13
+  re: "(.*?)"
 - field: kirje
   label: Kirje
   default: ''

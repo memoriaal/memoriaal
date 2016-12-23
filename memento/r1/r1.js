@@ -20,7 +20,7 @@ const RECORD_PARSER_RE = new RegExp(
       return re + field.re
     }) + "$"
 )
-console.log(RECORD_PARSER_RE)
+// console.log(RECORD_PARSER_RE)
 
 fs.access(BOOK + '.txt', (err) => {
   if (!err) {
@@ -157,11 +157,14 @@ const mergePage = function(raw_lines) {
 
 const readRecords = function(pages) {
 
-  const joinr = function(record, line) {
+  const joinRows = function(record, line) {
     let re = /[^0-9]-$/
     if (record === '') { return line }
     if (re.test(record)) {
       return record.slice(0, (record.length - 1)) + line
+    }
+    if (record.charAt(record.length - 1) === '.' && /^[0-9]/.test(line)) {
+      return record + line
     }
     re = /[0-9]-$/
     if (re.test(record)) {
@@ -175,17 +178,17 @@ const readRecords = function(pages) {
   let re = /(]| \.)$/
   Object.keys(pages).forEach(function(ix) {
     pages[ix].lines.forEach(function(line) {
-      record = joinr(record, line)
+      record = joinRows(record, line)
       if (re.test(line)) {
         record = record.replace( /  +/g, ' ' )
         PARANDUSED.line.forEach(function(parandus) {
           let re = new RegExp(parandus.f, 'g')
           record = record.replace(re, parandus.t)
-          // Poolitusmärke eemaldades kadusid sidekriipsud ka liitnimede seest.
-          // Convert all CamelCaseStrings to Dash-Separated-Strings
-          re = /([A-ZŠ])([A-ZŠ])([a-z])|([a-z])([A-ZŠ])/g
-          line = line.replace(re, '$1$4-$2$3$5')
         })
+        // Poolitusmärke eemaldades kadusid sidekriipsud ka liitnimede seest.
+        // Convert all CamelCaseStrings to Dash-Separated-Strings
+        // re = /([A-ZŠ])([A-ZŠ])([a-z])|([a-z])([A-ZŠ])/g
+        // line = line.replace(re, '$1$4-$2$3$5')
         // leftstream.write(record + '\n')
         record = record.split('\n')
         records = records.concat(record)
@@ -233,7 +236,15 @@ const parseRecords = function(records) {
   let i = 1
   records.forEach(function(record) {
     logger.log(record, i++)
-    parseRecord(record)
+
+    PARANDUSED.split.forEach(function(parandus) {
+      let re = new RegExp(parandus.f, 'g')
+      record = record.replace(re, parandus.t)
+    })
+    let _records = record.split('\n')
+    _records.forEach(function(record) {
+      parseRecord(record)
+    })
   })
 }
 
@@ -242,7 +253,6 @@ const parseRecords = function(records) {
 const crc32 = require('crc32');
 
 const parseRecord = function(record) {
-
   let isik = {
     id: crc32(record),
     kirje: record
@@ -253,7 +263,7 @@ const parseRecord = function(record) {
   if (match) {
     FIELDS.forEach(function(field) {
       if (!field.ix) { return }
-      if (match[field.ix]) { isik[field.field] = match[field.ix]}
+      if (match[field.ix]) { isik[field.field] = match[field.ix].replace(/^[, ]+|[, ]+$/gm,'')}
     })
     try {
       csvWrite(isik)
