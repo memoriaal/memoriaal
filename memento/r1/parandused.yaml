@@ -1,7 +1,7 @@
-simple:
+global:
   - f: "58\-11, 15\+5\. \[ük\] ‘Z"
     t: "58-11, 15+5. [ük]"
-newline:
+line:
   - f: "25398]IVANOV, Nikolai, Ivan"
     t: "25398]\nIVANOV, Nikolai, Ivan"
   - f: "(‘|’)Z"

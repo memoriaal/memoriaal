@@ -8,7 +8,19 @@ const YAML = require('yamljs')
 const logger = require(path.resolve(__dirname, 'logging.js'))('out.log')
 const BOOK = 'r_1'
 const PARANDUSED = YAML.load('parandused.yaml')
-
+const FIELDS = YAML.load('fields.yaml')
+const RECORD_PARSER_RE = new RegExp(
+  "^" + FIELDS
+    .filter(function(field) { return field.re && field.ix })
+    .sort(function(a, b) {
+      return a.ix - b.ix
+    })
+    .reduce(function(re, field) {
+      if (typeof(re) === 'object') { re = re.re }
+      return re + field.re
+    }) + "$"
+)
+console.log(RECORD_PARSER_RE)
 
 fs.access(BOOK + '.txt', (err) => {
   if (!err) {
@@ -24,7 +36,7 @@ fs.access(BOOK + '.txt', (err) => {
         if (err) {
           return console.log(err)
         }
-        PARANDUSED.simple.forEach(function(parandus) {
+        PARANDUSED.global.forEach(function(parandus) {
           let re = new RegExp(parandus.f, 'g')
           data = data.replace(re, parandus.t)
         })
@@ -48,7 +60,7 @@ const readConvertedFile = function(filename) {
 
   let pages = {}
   let raw_lines = []
-  let skip_line_after_pagenum = false
+  let skip_line_after_pagenum = true
   let page_number_re = /^ {0,120}([0-9]{1,3})$/
 
   lineReader.on('line', function (line) {
@@ -80,39 +92,6 @@ const readConvertedFile = function(filename) {
     // console.log(isikud.length)
   })
 
-}
-
-
-
-const CSVSTREAM = fs.createWriteStream('isikud.csv')
-const csvWrite = function csvWrite(isik) {
-  CSVSTREAM.write( ''
-    +   '"' + ( isik.memento            ? isik.memento             : '' ) + '"'
-    + ', "' + ( isik.perenimi           ? isik.perenimi            : '' ) + '"'
-    + ', "' + ( isik.eesnimi            ? isik.eesnimi             : '' ) + '"'
-    + ', "' + ( isik['sünniaasta']      ? isik['sünniaasta']       : '0000' ) + '"'
-    + ', "' + ( isik.kasHukkunud        ? isik.kasHukkunud         : 0  ) + '"'
-    + ', "' + ( isik.rviidad            ? isik.rviidad             : '' ) + '"'
-    + ', "' + ( isik.kasutamataKirjeosa ? isik.kasutamataKirjeosa  : '' ) + '"'
-    + ', "' + ( isik.kirje              ? isik.kirje               : '' ) + '"'
-    + '\n'
-  )
-}
-csvWrite({
-  memento: 'memento',
-  perenimi: 'perenimi',
-  eesnimi: 'eesnimi',
-  sünniaasta: 'sünniaasta',
-  kasHukkunud: 'kasHukkunud',
-  rviidad: 'rviidad',
-  kasutamataKirjeosa: 'kasutamataKirjeosa',
-  kirje: 'kirje'
-})
-
-
-const leftPad = function(i) {
-  let pad = "00000"
-  return pad.substring(0, pad.length - i.length) + i.toString()
 }
 
 
@@ -199,9 +178,13 @@ const readRecords = function(pages) {
       record = joinr(record, line)
       if (re.test(line)) {
         record = record.replace( /  +/g, ' ' )
-        PARANDUSED.newline.forEach(function(parandus) {
+        PARANDUSED.line.forEach(function(parandus) {
           let re = new RegExp(parandus.f, 'g')
           record = record.replace(re, parandus.t)
+          // Poolitusmärke eemaldades kadusid sidekriipsud ka liitnimede seest.
+          // Convert all CamelCaseStrings to Dash-Separated-Strings
+          re = /([A-ZŠ])([A-ZŠ])([a-z])|([a-z])([A-ZŠ])/g
+          line = line.replace(re, '$1$4-$2$3$5')
         })
         // leftstream.write(record + '\n')
         record = record.split('\n')
@@ -214,45 +197,73 @@ const readRecords = function(pages) {
 }
 
 
+
+const CSVSTREAM = fs.createWriteStream('isikud.csv')
+const csvWrite = function csvWrite(isik) {
+  CSVSTREAM.write(
+    FIELDS
+      .map(function(field) {
+        let ret_val = isik[field['field']] ? isik[field['field']] : field['default']
+        try {
+          return '"' + ret_val.replace(/"/g, '""') + '"'
+        } catch (e) {
+          console.log({ isik:isik, field:field, ret_val:ret_val })
+          throw e
+        }
+      })
+      .join(', ') + '\n'
+  )
+}
+
+let labels = {}
+FIELDS.forEach(function(field) {
+  labels[field.field] = field.label
+})
+csvWrite(labels)
+
+
+const leftPad = function(i) {
+  let pad = "00000"
+  return pad.substring(0, pad.length - i.length) + i.toString()
+}
+
 var isikud = []
 const parseRecords = function(records) {
+  console.log('parseRecords');
   let i = 1
   records.forEach(function(record) {
     logger.log(record, i++)
+    parseRecord(record)
   })
 }
 
-const parse_line = function(line) {
-  if (line === '') { return }
-  if (line.length === 1) { return }
-
-  let re = /^[0-9]*$/
-  let match = re.exec(line)
-  if (match) { return }
-
-  re = /^6. CONVERGED NAME REGISTER R4–R5 ?/
-  line = line.replace(re, '')
-  re = /^6. NIMEDE KOONDREGISTER R4–R5 ?/
-  line = line.replace(re, '')
-
-  // Poolitusmärke eemaldades kadusid sidekriipsud ka liitnimede seest.
-  // Convert all CamelCaseStrings to Dash-Separated-Strings
-  re = /([A-ZŠ])([A-ZŠ])([a-z])|([a-z])([A-ZŠ])/g
-  line = line.replace(re, '$1$4-$2$3$5')
 
 
-  re = /\b([0-9]{1,5}\. )/g
-  let linea = line.replace(re, '\n$1').split('\n')
-  linea.shift()
-  linea.forEach(function(record) {
-    parse_record(record.trim())
-  })
-  // setTimeout(function () { process.exit(1) }, 1);
-}
+const crc32 = require('crc32');
 
-const parse_record = function(record) {
-  record = record.replace('. ? ', ', 0000')
-  record = record.replace(/^[, ]+|[, ]+$/gm,'')
+const parseRecord = function(record) {
+
+  let isik = {
+    id: crc32(record),
+    kirje: record
+  }
+  // console.log(isik)
+
+  let match = RECORD_PARSER_RE.exec(record)
+  if (match) {
+    FIELDS.forEach(function(field) {
+      if (!field.ix) { return }
+      if (match[field.ix]) { isik[field.field] = match[field.ix]}
+    })
+    try {
+      csvWrite(isik)
+    } catch (e) {
+      console.log({ isik })
+      throw e
+    }
+  }
+
+  return
 
   // Split records without numbers that are appended
   if (record.split(/ ?† /).length > 1) {
@@ -265,8 +276,8 @@ const parse_record = function(record) {
     }
     parse_record(next_r)
   }
-  let re = /(,? R[0-9\-]+(?:,? ?R[0-9\-]+)*(?:, ?†)?)(.*)$/
-  let match = re.exec(record)
+  // let re = /(,? R[0-9\-]+(?:,? ?R[0-9\-]+)*(?:, ?†)?)(.*)$/
+  // let match = re.exec(record)
   if (match === null || match.length != 3) {
     console.log({E: 'ERROR', R:record, M:match})
     return
@@ -282,7 +293,7 @@ const parse_record = function(record) {
     record = record.slice(0, match.index) + match[1]
   }
 
-  let isik = { kirje: record, kasutamataKirjeosa: record }
+  // let isik = { kirje: record, kasutamataKirjeosa: record }
 
   // memento
   ;((isik) => {
