@@ -132,7 +132,7 @@ const mergePage = function(raw_lines) {
       process.exit()
     }
     // console.log(' left:',(match[1].length + 1))
-    console.log(JSON.stringify(positionMap, null, 4));
+    // console.log(JSON.stringify(positionMap, null, 4));
     // process.exit()
     return {left: match[1].length, split: match[2].length}
   }

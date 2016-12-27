@@ -24,3 +24,11 @@ memento/r5/r_5.txt
 memento/r2/isikud.csv
 
 memento/r2/r_2.txt
+
+*.xls
+
+memento/r3/r_3.txt
+
+*.csv
+
+*.pdf
