@@ -1,3 +1,14 @@
+-- Sümbolite tasandamine
+UPDATE isikud SET eesnimi = REPLACE(eesnimi,'Ä','ä');
+UPDATE isikud SET perenimi = REPLACE(perenimi,'Ä','ä');
+UPDATE isikud SET isanimi = REPLACE(isanimi,'Ä','ä');
+UPDATE r6v1 SET eesnimi = REPLACE(eesnimi,'Ä','ä');
+UPDATE r6v1 SET perenimi = REPLACE(perenimi,'Ä','ä');
+UPDATE r6v1 SET isanimi = REPLACE(isanimi,'Ä','ä');
+
+
+
+
 -- Unikaalsuspäringud
 
 Š-- Sama isikukoodiga erinevad isanimed
@@ -137,3 +148,32 @@ and i.isanimi = im.isanimi
 set im.isikukood = i.id
 where im.isikukood is null
 ;
+
+
+-- kasHukkunud view
+CREATE OR REPLACE view allikad_v
+AS
+  SELECT i.*, a.kashukkunud, a.allikas
+  FROM   (SELECT isikukood, kashukkunud, 'r4' AS allikas FROM   r4
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT isikukood, kashukkunud, 'r7' AS allikas FROM   r7
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT isikukood, kashukkunud, 'r6v1' AS allikas FROM   r6v1
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT isikukood, kashukkunud, 'r81_20' AS allikas FROM   r81_20
+          WHERE  isikukood IS NOT NULL) a
+         LEFT JOIN isikud i
+                ON i.id = a.isikukood;
+
+
+-- Hukkunute nimekiri
+SELECT   perenimi,
+         eesnimi,
+         group_concat(' in:', isanimi, ' s:', s�nniaasta, ' M:',allikas SEPARATOR "\n") AS "isanimi, sünd, allikas"
+FROM     allikad_v
+WHERE    kashukkunud = 1
+GROUP BY perenimi,
+         eesnimi
