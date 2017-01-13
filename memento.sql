@@ -154,10 +154,10 @@ where im.isikukood is null
 CREATE OR REPLACE view allikad_v
 AS
   SELECT i.*, a.kasvabanenud, a.kashukkunud, a.allikas
-  FROM   (SELECT isikukood, kashukkunud, 0 AS `kasvabanenud`, 'r4' AS allikas FROM   r4
+  FROM   (SELECT isikukood, kashukkunud, NULL AS `kasvabanenud`, 'r4' AS allikas FROM   r4
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, 0 AS `kasvabanenud`, 'r7' AS allikas FROM   r7
+          SELECT isikukood, kashukkunud, NULL AS `kasvabanenud`, 'r7' AS allikas FROM   r7
           WHERE  isikukood IS NOT NULL
           UNION ALL
           SELECT isikukood, kashukkunud, kasvabanenud, 'r6v1' AS allikas FROM   r6v1
@@ -169,11 +169,30 @@ AS
                 ON i.id = a.isikukood;
 
 
--- Hukkunute nimekiri
 SELECT   perenimi,
          eesnimi,
-         group_concat(' in:', isanimi, ' s:', s�nniaasta, ' M:',allikas SEPARATOR "\n") AS "isanimi, sünd, allikas"
+-- 		 kasvabanenud,
+--          kashukkunud,
+         group_concat(' in:', isanimi, ' s:', sünniaasta, ' M:',allikas SEPARATOR "\n") AS "isanimi, sünd, allikas"
 FROM     allikad_v
-WHERE    kashukkunud = 1
+WHERE    kashukkunud = 0
 GROUP BY perenimi,
+-- 		 kasvabanenud,
+         kashukkunud,
          eesnimi
+;
+
+
+/*
+Memento nimekirjadest r4, r7, r6 ja r8-1
+
+Unikaalse ees- ja perenimega, sünniaasta kas klapib või on määramata, represseerituid
+86539
+
+Unikaalse kasvabanenud ja kashukkunud staatusega represseerituid
+101926
+
+kasvabanenud jah:11695 ei:18338, määramata:78406; kokku:108439
+
+kashukkunud jah:22075, ei:69163; kokku:91238
+*/
