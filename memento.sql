@@ -153,17 +153,17 @@ where im.isikukood is null
 -- kasHukkunud view
 CREATE OR REPLACE view allikad_v
 AS
-  SELECT i.*, a.kashukkunud, a.allikas
-  FROM   (SELECT isikukood, kashukkunud, 'r4' AS allikas FROM   r4
+  SELECT i.*, a.kasvabanenud, a.kashukkunud, a.allikas
+  FROM   (SELECT isikukood, kashukkunud, 0 AS `kasvabanenud`, 'r4' AS allikas FROM   r4
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, 'r7' AS allikas FROM   r7
+          SELECT isikukood, kashukkunud, 0 AS `kasvabanenud`, 'r7' AS allikas FROM   r7
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, 'r6v1' AS allikas FROM   r6v1
+          SELECT isikukood, kashukkunud, kasvabanenud, 'r6v1' AS allikas FROM   r6v1
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, 'r81_20' AS allikas FROM   r81_20
+          SELECT isikukood, kashukkunud, kasvabanenud, 'r81_20' AS allikas FROM   r81_20
           WHERE  isikukood IS NOT NULL) a
          LEFT JOIN isikud i
                 ON i.id = a.isikukood;
