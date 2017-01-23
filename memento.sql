@@ -11,7 +11,7 @@ UPDATE r6v1 SET isanimi = REPLACE(isanimi,'Ä','ä');
 
 -- Unikaalsuspäringud
 
-Š-- Sama isikukoodiga erinevad isanimed
+-- Sama isikukoodiga erinevad isanimed
 select *
 from x_isikud i
 left join x_import im
@@ -98,10 +98,10 @@ set im.isikukood = i.id
 where im.isikukood is null
 ;
 -- lisan isanimed neile, kel on
-update x_isikud i
+update isikud i
 left join
 (
-	SELECT distinct sünniaasta, perenimi, eesnimi, isanimi FROM `x_import`
+	SELECT distinct sünniaasta, perenimi, eesnimi, isanimi FROM `r5_22`
 	WHERE `isanimi` NOT LIKE ''
 	and `isikukood` is not null
 ) im
@@ -115,8 +115,8 @@ and i.isanimi is null
 
 -- sünniaastata isikutel esialgseks unikaalsuseks perenimi, eesnimi, isanimi
 -- Isikukoodid tagasi neilt, kel olid sünniaastad ja isanimed olemas
-update x_import im
-left join x_isikud i
+update r5_22 im
+left join isikud i
 on i.eesnimi = im.eesnimi
 and i.perenimi = im.perenimi
 and i.isanimi = im.isanimi
@@ -154,7 +154,7 @@ where im.isikukood is null
 CREATE OR REPLACE view allikad_v
 AS
   SELECT i.*, a.kashukkunud, a.allikas
-  FROM   (SELECT isikukood, kashukkunud, 'r4' AS allikas FROM   r4
+  FROM  ( SELECT isikukood, kashukkunud, 'r4' AS allikas FROM   r4
           WHERE  isikukood IS NOT NULL
           UNION ALL
           SELECT isikukood, kashukkunud, 'r7' AS allikas FROM   r7
@@ -164,7 +164,11 @@ AS
           WHERE  isikukood IS NOT NULL
           UNION ALL
           SELECT isikukood, kashukkunud, 'r81_20' AS allikas FROM   r81_20
-          WHERE  isikukood IS NOT NULL) a
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT isikukood, kashukkunud, 'r5_22' AS allikas FROM   r5_22
+          WHERE  isikukood IS NOT NULL
+        ) a
          LEFT JOIN isikud i
                 ON i.id = a.isikukood;
 
