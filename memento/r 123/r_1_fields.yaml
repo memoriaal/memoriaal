@@ -8,27 +8,27 @@
   label: Perenimi
   default: ''
   ix: 1
-  re: "([^ ]+), ?"
+  re: "([^ ]+)"
 - field: eesnimi
   label: Eesnimi
   default: ''
   ix: 2
-  re: "([^ ]+), ?"
+  re: "(?:, ?([^ ]+))?"
 - field: isanimi
   label: Isanimi
   default: ''
   ix: 3
-  re: "([^ ]+) "
+  re: "(?:, ?([^ ]+))?"
 - field: nimekujud
   label: Nimekujud
   default: ''
   ix: 4
-  re: "((?:[ei]n )?ka [^\\.]+ )?"
+  re: "[\.,]( (?:[ei]n\.? )?ka [^\\.]+ )?"
 - field: sünd
   label: Sünd
   default: ''
   ix: 5
-  re: 's\. ?([0-9\. ]+) '
+  re: '(?:s\. ?([0-9\., ]+) )?'
 - field: viit
   label: Viit
   default: ''
