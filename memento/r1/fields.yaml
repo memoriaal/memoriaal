@@ -28,7 +28,7 @@
   label: Sünd
   default: ''
   ix: 5
-  re: 's\. ?([0-9][^ ]+)? ?'
+  re: 's\. ?([0-9\. ]+) '
 - field: viit
   label: Viit
   default: ''
@@ -84,9 +84,14 @@
   default: ''
   ix:
   re:
-- field: kasHukkunud
-  label: KasHukkunud
-  default: ''
+- field: kasvabanenud
+  label: kasvabanenud
+  default: '0'
+  ix:
+  re:
+- field: kashukkunud
+  label: kashukkunud
+  default: '0'
   ix:
   re:
 - field: rViidad

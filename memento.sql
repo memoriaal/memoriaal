@@ -62,6 +62,31 @@ update `x_import`
 where isikukood is null
 ;
 
+-- punktivaba kuupäev
+select sünd, left(sünd, length(sünd)-1), kirje from r1 where right(sünd,1) = '.';
+update r1 set sünd = left(sünd, length(sünd)-1) where right(sünd,1) = '.';
+select vabanemine, left(vabanemine, length(vabanemine)-1), kirje from r1 where right(vabanemine,1) = '.';
+update r1 set vabanemine = left(vabanemine, length(vabanemine)-1) where right(vabanemine,1) = '.';
+
+-- kuupäevast aastaks
+select sünniaasta, sünd, right(sünd,4) from r1          where sünniaasta = 0 and sünd regexp '^[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9][0-9][0-9]$';
+update r1 set sünniaasta = right(sünd,4)                where sünniaasta = 0 and sünd regexp '^[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9][0-9][0-9]$';
+select sünniaasta, sünd, right(sünd,4), kirje from r1   where sünniaasta = 0 and sünd regexp '^[0-9][0-9]\.[0-9][0-9][0-9][0-9]$';
+update r1 set sünniaasta = right(sünd,4)                where sünniaasta = 0 and sünd regexp '^[0-9][0-9]\.[0-9][0-9][0-9][0-9]$';
+select sünniaasta, sünd, right(sünd,4), kirje from r1   where sünniaasta = 0 and sünd regexp '^[0-9][0-9][0-9][0-9]$';
+update r1 set sünniaasta = right(sünd,4)                where sünniaasta = 0 and sünd regexp '^[0-9][0-9][0-9][0-9]$';
+select sünniaasta, sünd, right(sünd,2), kirje from r1   where sünniaasta = 0 and sünd regexp '^[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]$';
+update r1 set sünniaasta = right(sünd,2)                where sünniaasta = 0 and sünd regexp '^[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]$';
+--tapetud
+select kirje from r1   WHERE kashukkunud = 0 and `Kirje` REGEXP 'tapeti';
+update            r1   set kashukkunud = 1 WHERE kashukkunud = 0 and `Kirje` REGEXP 'tapeti';
+select kirje from r1   WHERE kashukkunud = 0 and `Kirje` REGEXP 'tapetud';
+update            r1   set kashukkunud = 1 WHERE kashukkunud = 0 and `Kirje` REGEXP 'tapetud';
+select kirje from r1   WHERE kashukkunud = 0 and `Kirje` REGEXP 'surn\\.';
+update            r1   set kashukkunud = 1 WHERE kashukkunud = 0 and `Kirje` REGEXP 'surn\\.';
+select kirje from r1   WHERE kashukkunud = 0 and `Kirje` REGEXP 'täide viidud';
+update            r1   set kashukkunud = 1 WHERE kashukkunud = 0 and `Kirje` REGEXP 'täide viidud';
+
 
 -- Tühikutest vabaks nime alguses ja lõpus!
 update x_import im set
@@ -101,7 +126,7 @@ where im.isikukood is null
 update isikud i
 left join
 (
-	SELECT distinct sünniaasta, perenimi, eesnimi, isanimi FROM `r5_22`
+	SELECT distinct sünniaasta, perenimi, eesnimi, isanimi FROM `r1`
 	WHERE `isanimi` NOT LIKE ''
 	and `isikukood` is not null
 ) im
@@ -153,20 +178,29 @@ where im.isikukood is null
 -- kasHukkunud view
 CREATE OR REPLACE view allikad_v
 AS
-  SELECT i.*, a.kasvabanenud, a.kashukkunud, a.allikas
-  FROM  ( SELECT isikukood, kashukkunud, NULL AS `kasvabanenud`, NULL AS `kasmitteküüditatud`, 'r4' AS allikas FROM   r4
+  SELECT i.*, a.kasvabanenud, a.kashukkunud, kasmitteküüditatud, a.allikas
+  FROM  ( SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r4' AS allikas FROM   r4
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, NULL AS `kasvabanenud`, NULL AS `kasmitteküüditatud`, 'r7' AS allikas FROM   r7
+          SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r7' AS allikas FROM   r7
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r6v1' AS allikas FROM   r6v1
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r6v1' AS allikas FROM   r6v1
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r81_20' AS allikas FROM   r81_20
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r81_20' AS allikas FROM   r81_20
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r5_22' AS allikas FROM   r5_22
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r5_22' AS allikas FROM   r5_22
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r1' AS allikas FROM   r1
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r2' AS allikas FROM   r2
+          WHERE  isikukood IS NOT NULL
+          UNION ALL
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r3' AS allikas FROM   r3
           WHERE  isikukood IS NOT NULL
         ) a
          LEFT JOIN isikud i
@@ -186,6 +220,25 @@ GROUP BY perenimi,
          eesnimi
 ;
 
+SELECT id AS isikukood,
+       perenimi,
+       eesnimi,
+       Max(kasvabanenud) AS kasvabanenud,
+       Max(kashukkunud) AS kashukkunud,
+       Max(kasmitteküüditatud) AS kasmitteküüditatud,
+       Group_concat(' in:', isanimi, ' s:', sünniaasta, ' M:',allikas SEPARATOR "\n") AS "isanimi, sünd, allikas"
+FROM   allikad_v a
+GROUP  BY id,
+          perenimi,
+          eesnimi
+HAVING  Max(a.kasvabanenud)
+            + Max(a.kasmitteküüditatud)
+            + Max(a.kashukkunud) != 1
+ORDER  BY ( Max(a.kasvabanenud)
+            + Max(a.kasmitteküüditatud)
+            + Max(a.kashukkunud) ) DESC,
+          perenimi,
+          eesnimi;
 
 /*
 Memento nimekirjadest r4, r7, r6 ja r8-1
