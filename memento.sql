@@ -178,33 +178,41 @@ where im.isikukood is null
 -- kasHukkunud view
 CREATE OR REPLACE view allikad_v
 AS
-  SELECT i.*, a.kasvabanenud, a.kashukkunud, kasmitteküüditatud, a.allikas
-  FROM  ( SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r4' AS allikas FROM   r4
+  SELECT i.*, a.kasvabanenud, a.kashukkunud, kasmitteküüditatud, a.allikas, a.kirje
+  FROM  ( SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r4' AS allikas, kirje FROM   r4
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r7' AS allikas FROM   r7
+          SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r7' AS allikas, kirje FROM   r7
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r6v1' AS allikas FROM   r6v1
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r6v1' AS allikas, kirje FROM   r6v1
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r81_20' AS allikas FROM   r81_20
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r81_20' AS allikas, kirje FROM   r81_20
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r5_22' AS allikas FROM   r5_22
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r5_22' AS allikas, kirje FROM   r5_22
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r1' AS allikas FROM   r1
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r1' AS allikas, kirje FROM   r1
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r2' AS allikas FROM   r2
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r2' AS allikas, kirje FROM   r2
           WHERE  isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r3' AS allikas FROM   r3
+          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r3' AS allikas, kirje FROM   r3
           WHERE  isikukood IS NOT NULL
         ) a
          LEFT JOIN isikud i
                 ON i.id = a.isikukood;
+
+
+
+CREATE OR REPLACE view staatused_v
+AS
+select id, max(kasvabanenud) kasvabanenud, max(kashukkunud) kashukkunud, max(kasmitteküüditatud) kasmitteküüditatud
+from allikad_v
+group by id;
 
 
 SELECT   perenimi,
@@ -226,7 +234,7 @@ SELECT id AS isikukood,
        Max(kasvabanenud) AS kasvabanenud,
        Max(kashukkunud) AS kashukkunud,
        Max(kasmitteküüditatud) AS kasmitteküüditatud,
-       Group_concat(' in:', isanimi, ' s:', sünniaasta, ' M:',allikas SEPARATOR "\n") AS "isanimi, sünd, allikas"
+       Group_concat(' in:', isanimi, ' s:', sünniaasta, ' M:', allikas SEPARATOR "\n") AS "isanimi, sünd, allikas"
 FROM   allikad_v a
 GROUP  BY id,
           perenimi,
@@ -253,3 +261,13 @@ kasvabanenud jah:11695 ei:18338, määramata:78406; kokku:108439
 
 kashukkunud jah:22075, ei:69163; kokku:91238
 */
+
+
+
+set @oval = '..', @nval = '', @eval = '\\.\\.';
+select concat(
+   'UPDATE ', table_name, ' SET `',
+   column_name,
+   '` = REPLACE(`', column_name, '`, ''', @oval, ''', ''', @nval, ''') WHERE `', column_name, '` regexp \'^', @eval, '$\';')
+from information_schema.columns
+where table_name = 'ohvrid3';
