@@ -1,3 +1,6 @@
+# Andmekorrastamiseks ja kontrollitud kirjete impordiks mõeldud tunnused
+
+- isikukood
 - perenimi
 - eesnimi
 - isanimi
