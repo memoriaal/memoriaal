@@ -175,33 +175,57 @@ where im.isikukood is null
 ;
 
 
--- kasHukkunud view
-CREATE OR REPLACE view allikad_v
+--
+CREATE OR REPLACE view repr_v
 AS
-  SELECT i.*, a.kasvabanenud, a.kashukkunud, kasmitteküüditatud, a.allikas, a.kirje
-  FROM  ( SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r4' AS allikas, kirje FROM   r4
-          WHERE  isikukood IS NOT NULL
+  SELECT i.*, a.sünniaasta as sünniaeg, a.kasvabanenud, a.kashukkunud, a.kasmitteküüditatud, IFNULL(a.sünnikoht,'') as sünnikoht, IFNULL(a.elukoht,'') as elukoht, tapetud, küüditatud, arreteeritud, a.allikas, IFNULL(a.kirje,'') as kirje
+  FROM  ( SELECT sünniaasta, isikukood
+          , kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`
+          , '' as sünnikoht, '' as elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r4' AS allikas, kirje
+          FROM r4 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`, 'r7' AS allikas, kirje FROM   r7
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, 0 AS `kasvabanenud`, 0 AS `kasmitteküüditatud`
+          , '' as sünnikoht, '' as elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r7' AS allikas, kirje
+          FROM r7 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r6v1' AS allikas, kirje FROM   r6v1
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, kasvabanenud, kasmitteküüditatud
+          , '' as sünnikoht, '' as elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r6v1' AS allikas, kirje
+          FROM r6v1 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r81_20' AS allikas, kirje FROM   r81_20
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, kasvabanenud, kasmitteküüditatud
+          , sünnikoht, '' as elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r81_20' AS allikas, kirje
+          FROM r81_20 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, kasmitteküüditatud, 'r5_22' AS allikas, kirje FROM   r5_22
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, kasvabanenud, kasmitteküüditatud
+          , sünnikoht, `elukoht enne küüditamist` as elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r5_22' AS allikas, kirje
+          FROM r5_22 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r1' AS allikas, kirje FROM   r1
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`
+          , sünnikoht, elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r1' AS allikas, kirje
+          FROM r1 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r2' AS allikas, kirje FROM   r2
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`
+          , sünnikoht, elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r2' AS allikas, kirje
+          FROM r2 WHERE isikukood IS NOT NULL
           UNION ALL
-          SELECT sünniaasta, isikukood, kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`, 'r3' AS allikas, kirje FROM   r3
-          WHERE  isikukood IS NOT NULL
+          SELECT sünniaasta, isikukood
+          , kashukkunud, kasvabanenud, 0 AS `kasmitteküüditatud`
+          , sünnikoht, elukoht, '' as tapetud, '' as küüditatud, '' as arreteeritud
+          , 'r3' AS allikas, kirje
+          FROM r3 WHERE isikukood IS NOT NULL
         ) a
          LEFT JOIN isikud i
                 ON i.id = a.isikukood;
@@ -270,4 +294,4 @@ select concat(
    column_name,
    '` = REPLACE(`', column_name, '`, ''', @oval, ''', ''', @nval, ''') WHERE `', column_name, '` regexp \'^', @eval, '$\';')
 from information_schema.columns
-where table_name = 'ohvrid3';
+where table_name = 'ohvrid';

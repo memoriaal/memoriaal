@@ -10,6 +10,7 @@
 - kashukkunud
 - kasmitteküüditatud
 - kasSaatusTeadmata
+- Memoriaalile (jah/ei)
   Esialgu tühi. kui kontrollin ja ikka ei tea, teen linnukese
 - Sünnikoht
 - Elukoht represseerimisel
