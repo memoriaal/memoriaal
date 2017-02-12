@@ -5,7 +5,7 @@
 - eesnimi
 - isanimi
 - sünniaeg
-- surmaeg
+- surmaaeg
 - kasvabanenud
 - kashukkunud
 - kasmitteküüditatud
