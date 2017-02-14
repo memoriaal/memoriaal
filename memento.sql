@@ -2,8 +2,8 @@
 UPDATE isikud SET eesnimi = REPLACE(eesnimi,'Ä','ä');
 UPDATE isikud SET perenimi = REPLACE(perenimi,'Ä','ä');
 UPDATE isikud SET isanimi = REPLACE(isanimi,'Ä','ä');
-UPDATE r6v1 SET eesnimi = REPLACE(eesnimi,'Ä','ä');
-UPDATE r6v1 SET perenimi = REPLACE(perenimi,'Ä','ä');
+UPDATE ohvrid SET eesnimi = REPLACE(eesnimi,'Ä','ä');
+UPDATE ohvrid SET pernimi = REPLACE(perenimi,'Ä','ä');
 UPDATE r6v1 SET isanimi = REPLACE(isanimi,'Ä','ä');
 
 
