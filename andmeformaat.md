@@ -5,15 +5,23 @@
 - eesnimi
 - isanimi
 - sünniaeg
-- surmaaeg
+- surmaaeg (kõige laiemas mõttes)
 - kasvabanenud
 - kashukkunud
 - kasmitteküüditatud
+  - 41
+  - 45 sakslased
+  - 49
+  - 51 jehovistid
 - kasSaatusTeadmata
+- kasPoliitiline (jah/ei)
 - Memoriaalile (jah/ei)
   Esialgu tühi. kui kontrollin ja ikka ei tea, teen linnukese
 - Sünnikoht
 - Elukoht represseerimisel
+- Vangistuse koht
+- Asumise koht
+- Surmakoht
 - KIRJE
 
 ## Ohvrite tabel
@@ -23,4 +31,9 @@
 - represseerimiskuupäev
   - tapetud
   - küüditatud
-  - arreteeritud
+  - arreteeritud (ohvrite tabel, siis mementod kahanevas)
+
+
+## ????
+karistusmäär
+surm/hukkamine?
