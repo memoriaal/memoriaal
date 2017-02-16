@@ -22,3 +22,14 @@ where i2.id is not null
 and i2.baaskirje is null
 and i1.sünniaasta > 0
 ;
+
+-- kui impordikirje viitab baaskirjega isikule,
+-- siis peab viitama otse baaskirjele
+
+UPDATE isikud a
+left join isikud i on i.id = a.baaskirje
+set a.baaskirje = ifnull(i.baaskirje, i.id);
+
+UPDATE r1 a
+left join isikud i on i.id = a.isikukood
+set a.isikukood = ifnull(i.baaskirje, i.id);
