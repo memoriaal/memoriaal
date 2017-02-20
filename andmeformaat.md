@@ -55,14 +55,16 @@ surnud/hukatud/vabanenud?
 * "ВМН" või "К расстрелу" režiimi lahtris on Memoriaali kandidaat
 
 * perekonnad vaja kokku kleepida M5 põhjal
-* 41. aasta küüditamisel perekonna pea represseeriti oma perest eraldi. Pea arretteriti ja saadeti vangilaagrisse, perekond saadeti asumisele.
-* 45. küüditamine, M6.3 (sakslased). Skeem sama, mis 49.a omadel, kus perekonnapea juures täpsem aadress. Asumisele saadeti koos.
-* 51. jehovistid, M6.5. sama, mis 45. ja 49.
-* R4-1 baasis on kulakud. Neid polegi praegu imporditud ja selle alusel tekkinud mitteküüditamise märge arvesse ei lähe. Samuti ei lähe need *e-memoriaalile*
+* _41. aasta küüditamisel perekonna pea represseeriti oma perest eraldi. Pea arretteriti ja saadeti vangilaagrisse, perekond saadeti asumisele.
+* _45. küüditamine, M6.3 (sakslased). Skeem sama, mis 49.a omadel, kus perekonnapea juures täpsem aadress. Asumisele saadeti koos.
+* _51. jehovistid, M6.5. sama, mis 45. ja 49.
+* _R4-1 baasis on kulakud. Neid polegi praegu imporditud ja selle alusel tekkinud mitteküüditamise märge arvesse ei lähe. Samuti ei lähe need *e-memoriaalile*
 
 #### TODO
-* vahepeal küüditatud M6.4 - eraldi nimekiri Argole käsitsi töötlemiseks. Kuidagi vaja võimaldada ka perede kokumärkimine.
+* vahepeal küüditatud M6.4 - eraldi nimekiri Argole käsitsi töötlemiseks. Kuidagi vaja võimaldada ka perede kokkumärkimine.
 * paragrahvid, mis käivad poliitiliste alla, Annab M.S.
-* Asukohadregister luua. Perekonnapeade kirjetes
+* Asukoharegister luua. Perekonnapeade kirjetest
   - M4, lk 772 on asumiskohtade register
 * M.S. koostab "Memento sisukordade sisukorra" - millised registrid on prioriteetsemad
+* M.S. puhastab Ohvrite reziimi lahtri siin:  
+  https://docs.google.com/spreadsheets/d/1JHPxHwgMhhfhqCx_QVLtsZEKo1ALLAKHBJINwX02gX0/edit
