@@ -108,4 +108,4 @@ MS*
 
 ---
 
-\* [Ohvrite tabeli veerud]("./Ohvrite tabeli pealkirjad.md")
+\* [Ohvrite tabeli veerud](./Ohvrite tabeli pealkirjad.md)
