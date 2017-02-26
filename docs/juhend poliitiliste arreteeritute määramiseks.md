@@ -11,9 +11,10 @@ Need arreteeritud, kel paragrahvi pole või ei ole õiget, peaks märgistama, et
 ## „Poliitilised“ paragrahvid
 Need süüdimõistmise (või kui süüdi mõista ei jõutud, siis arreteerimise) aluseks olnud paragrahvid, mille järgi süüdimõistetud isikud kvalifitseeruvad rehabiliteerimise seaduse (1992) järgi rehabiliteeritutena ja seetõttu on õigusevastaselt represseeritud isikud ja kuuluvad KO memoriaalile kandmisele.
 
-1. Vene NFSV kriminaalkoodeksi (vene k УК РСФСР jne) paragrahvid (kehtis aastatel 1940–1960):  
+### Vene NFSV kriminaalkoodeksi (vene k УК РСФСР jne) paragrahvid (kehtis aastatel 1940–1960)
 Arvesse läheb ka süüdistus allpoolloetletud paragrahvides ettenähtud „kuriteole kihutamise või kaasaaitamise eest“ (tähistatud läbi paragrahvi 17, näiteks 17-58-1a) ja „kuriteo katse või ettevalmistamise eest“ (läbi paragrahvi 19, näiteks 19-58-1a). Süüdimõistmise paragrahvid on algtabelis „ohvrid“ veergudes AO kuni BK.
 Kui paragrahv ei ole loetelus toodud konkreetse lõikega, lähevad arvesse kõik paragrahvi lõiked, vastasel juhul ainult määratud lõige (näiteks 58-10 lg. 1 läheb arvesse, 182 lg. 2 aga mitte).
+
   - 58-1a
   - 58-1b
   - 58-1v
@@ -63,7 +64,8 @@ Kui paragrahv ei ole loetelus toodud konkreetse lõikega, lähevad arvesse kõik
   - 193-10
 
 
-2. Eesti NSV kriminaalkoodeksi paragrahvid (kehtis aastatel 1961–20.08.1991):
+### Eesti NSV kriminaalkoodeksi paragrahvid (kehtis aastatel 1961–20.08.1991):
+
   - 62
   - 63
   - 64
