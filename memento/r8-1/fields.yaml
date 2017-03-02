@@ -55,7 +55,7 @@
   ix: 10
   re: "(?:(arr\\. ?[^ ]+),? )?"
 - field: kohus
-  label: kohus
+  label: Kohus
   default: ''
   ix: 11
   re: "(?:((?:trib|erin)\\. ?[^ ]+),? )?"

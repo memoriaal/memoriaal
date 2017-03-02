@@ -80,19 +80,20 @@ const readConvertedFile = function(section, filename) {
       skip_line_after_pagenum = true
       let page_number = match[1]
       process.stdout.cursorTo(0)
-      process.stdout.write('page_number: ' + page_number)
+      process.stdout.write('page_number: ' + page_number + '. ')
       pages[page_number] = {n:page_number, lines:mergePage(section, raw_lines)}
       raw_lines = []
       return
     }
     // let page_name_re = /^( {0,120}[A-ZÕÜÄÖŠŽ\-]{3,})$/
     // if (page_name_re.exec(line)) { return }
+    // console.log(line)
     raw_lines.push(line)
     return
   })
 
   lineReader.on('close', function (line) {
-    console.log('converted ' + Object.keys(pages).length + ' pages from pdf.')
+    console.log('\nconverted ' + Object.keys(pages).length + ' pages from pdf.')
     readRecords(section, pages)
     // console.log(isikud.length)
   })
@@ -101,12 +102,13 @@ const readConvertedFile = function(section, filename) {
 
 
 const mergePage = function(section, raw_lines) {
-
   function findSplit(raw_lines, log) {
+    // console.log(raw_lines);
     let positionMap = []
     for (var i = 0; i < 150; i++) {
       positionMap[i] = true
     }
+    // log = true;
     raw_lines.forEach(function(line) {
       if (log) { console.log(line) }
       let temp = ''
@@ -151,14 +153,19 @@ const mergePage = function(section, raw_lines) {
     // console.log(JSON.stringify(positionMap, null, 4));
     // process.exit()
     // console.log(ret_a)
+    // console.log(ret_a);
     return {ret_a}
   }
 
   let lefthalf = []
   let righthalf = []
-  let split = findSplit(raw_lines)
-  let line_split_str = '^(.{1,' + split.left + '}).{0,' + split.split + '}(.*)$'
+  let split = findSplit(raw_lines).ret_a
+  let l_len = split[0].length
+  let s_len = split[1].length
+  console.log(l_len, s_len, split)
+  let line_split_str = '^(.{1,' + l_len + '}).{0,' + s_len + '}(.*)$'
   let line_split_re = new RegExp(line_split_str)
+  console.log('split', split, 'line_split_str', line_split_str, 'line_split_re', line_split_re);
   raw_lines.forEach(function(line) {
     match = line_split_re.exec(line)
     if (match) {
@@ -196,6 +203,7 @@ const readRecords = function(section, pages) {
   let records = []
   let re = /(]| \.)$/
   Object.keys(pages).forEach(function(ix) {
+    // console.log('ix:',pages[ix].lines);
     pages[ix].lines.forEach(function(line) {
       record = joinRows(record, line)
       if (re.test(line)) {
