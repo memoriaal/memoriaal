@@ -3,10 +3,11 @@ const util = require('util')
 const async = require('async')
 const fs = require('fs')
 const YAML = require('yamljs')
+const crc32 = require('crc32');
 // const replace = require('replace')
 
 const logger = require(path.resolve(__dirname, 'logging.js'))('out.log')
-const BOOK = 'r_8-1'
+const BOOK = 'r81'
 const SECTIONS = [
   { section: "1", columns: 2, first_page: 226, last_page: 742, csvstream: fs.createWriteStream('isikud_r8_1.csv') }
 ]
@@ -113,69 +114,54 @@ const mergePage = function(section, raw_lines) {
       if (log) { console.log(line) }
       let temp = ''
       for (var i = 0; i < line.length; i++) {
-        positionMap[i] = positionMap[i] && (line.charAt(i) === ' ' ? true : false)
+        let is_space = (line.charAt(i) === ' ')
+        positionMap[i] = positionMap[i] && is_space
         // console.log(i,line.charAt(i))
-        temp = temp + (line.charAt(i) === ' ' ? '+' : '-')
+        temp = temp + (is_space ? '+' : '-')
       }
       if (log) { console.log(temp) }
     })
     if (log) { return }
-    split_re = /^(\-+)(?:(\++)(\-+))*/
-    let match = split_re.exec(
-      positionMap
-        .map(function(n){ return n ? '+' : '-' })
-        .join('')
-    )
-    ret_a = []
-    for (var i = 1; i < section.columns*2; i++) {
-      if (match[i] === undefined) {
-        console.log('ERR')
-        findSplit(raw_lines, true)
-        console.log(positionMap
-          .map(function(n){ return n ? '+' : '-' })
-          .join(''))
-        console.log(match)
-        process.exit()
+    let prev_char_was_space = false
+    let seq_len = 0
+    let ret_a = []
+    let ret_re = '^'
+    positionMap.forEach( function(c) {
+      if (c === prev_char_was_space) {
+        seq_len ++
+      } else {
+        ret_a.push(seq_len)
+        prev_char_was_space = c
+        seq_len = 1
       }
-      ret_a.push(match[i])
+    })
+    for (var i = 0; i < ret_a.length-2; i=i+2) {
+      ret_re = ret_re + '(.{0,' + ret_a[i] + '})'
+                      + '(?:.{' + ret_a[i+1] + '})?'
     }
-    // In case of pattern mismatch
-    // if (match[3] === '' || match[2].charAt(0) !== '+') {
-    //   console.log('ERR');
-    //   findSplit(raw_lines, true)
-    //   console.log(positionMap
-    //     .map(function(n){ return n ? '+' : '-' })
-    //     .join(''))
-    //   console.log(match)
-    //   process.exit()
-    // }
-    // console.log(' left:',(match[1].length + 1))
-    // console.log(JSON.stringify(positionMap, null, 4));
-    // process.exit()
-    // console.log(ret_a)
-    // console.log(ret_a);
-    return {ret_a}
+    return ret_re + '(.*)?$'
   }
 
   let lefthalf = []
   let righthalf = []
-  let split = findSplit(raw_lines).ret_a
-  let l_len = split[0].length
-  let s_len = split[1].length
-  console.log(l_len, s_len, split)
-  let line_split_str = '^(.{1,' + l_len + '}).{0,' + s_len + '}(.*)$'
+  let line_split_str = findSplit(raw_lines)
+  // console.log(1, line_split_str)
   let line_split_re = new RegExp(line_split_str)
-  console.log('split', split, 'line_split_str', line_split_str, 'line_split_re', line_split_re);
   raw_lines.forEach(function(line) {
+    // console.log(2, line)
     match = line_split_re.exec(line)
     if (match) {
+      // console.log('2M', match)
       if (match[1].trim().length > 1) {
+        // console.log('2L', match[1].trim())
         lefthalf.push((match[1]).trim())
       }
       if (match[2] && match[2].trim().length > 1) {
+        // console.log('2R', match[2].trim())
         righthalf.push((match[2]).trim())
       }
     }
+    // console.log(line, match)
   })
   return lefthalf.concat(righthalf)
 }
@@ -184,14 +170,51 @@ const mergePage = function(section, raw_lines) {
 const readRecords = function(section, pages) {
 
   const joinRows = function(record, line) {
-    let re = /[^0-9]-$/
     if (record === '') { return line }
-    if (re.test(record)) {
-      return record.slice(0, (record.length - 1)) + line
+
+    // Kirje poolitatud keset allikaviidet
+    //     ... agitatsioon. (10) [R2
+    //     PC 28402]
+    if (/\[[^\]]*$/.test(record)) {
+      // console.log();
+      // console.log(1, record);
+      // console.log(2, line);
+      return record + line
     }
+    if (/^(ANSV|ÜK |NKVD|EV |RK,|TPI-s)/.test(line)) {
+      return record + line
+    }
+
+    if (line.slice(0,2).toUpperCase() === line.slice(0,2)) {
+      // console.log();
+      // console.log(21, record);
+      // console.log(22, line);
+    }
+    if (/^[A-ZÕÜÄÖŠŽ]{2}/.test(line)) {
+      console.log();
+      console.log(31, record);
+      console.log(32, line);
+      process.exit(1)
+    }
+    // Kui kirje lõpeb sidekriipsuga, siis liidan read;
+    //   sidekriipsu säilitan vaid siis, kui uus rida algab suurtähega
+    let re = /[^0-9]-$/
+    if (re.test(record)) {
+      if (line.slice(0,1).toUpperCase() === line.slice(0,1)) {
+        return record + line
+      } else {
+        return record.slice(0, (record.length - 1)) + line
+      }
+    }
+    // Kirje lõpeb punktiga ja uus rida algab numbriga
+    //     ... vab. asum.
+    //     17.07.56
     if (record.charAt(record.length - 1) === '.' && /^[0-9]/.test(line)) {
       return record + line
     }
+    // Kirje lõpeb numbri ja sidekriipsuga; liidan read
+    //     ... trib. 15.02.45, §58-1a, 58-
+    //     11, 10+5a.
     re = /[0-9]-$/
     if (re.test(record)) {
       return record + line
@@ -201,14 +224,18 @@ const readRecords = function(section, pages) {
 
   let record = ''
   let records = []
-  let re = /(]| \.)$/
+  let eol_re = /(]$)/
   Object.keys(pages).forEach(function(ix) {
     // console.log('ix:',pages[ix].lines);
     pages[ix].lines.forEach(function(line) {
+      console.log('"' + line + '"');
+      if (/^ *$/.test(line)) {
+        return
+      }
       record = joinRows(record, line)
-      if (re.test(line)) {
+      if (eol_re.test(line)) {
         record = record.replace( /  +/g, ' ' )
-        PARANDUSED.line.forEach(function(parandus) {
+        PARANDUSED.record.forEach(function(parandus) {
           let re = new RegExp(parandus.f, 'g')
           record = record.replace(re, parandus.t)
         })
@@ -217,8 +244,9 @@ const readRecords = function(section, pages) {
         // re = /([A-ZŠ])([A-ZŠ])([a-z])|([a-z])([A-ZŠ])/g
         // line = line.replace(re, '$1$4-$2$3$5')
         // leftstream.write(record + '\n')
-        record = record.split('\n')
-        records = records.concat(record)
+        // record = record.split('\n')
+        // records = records.concat(record)
+        records.push(record)
         record = ''
       }
     })
@@ -232,7 +260,7 @@ const parseRecords = function(section, records) {
   console.log('parseRecords');
   let i = 1
   records.forEach(function(record) {
-    logger.log(record, i++)
+    logger.log('@'+record, crc32(record))
 
     PARANDUSED.split.forEach(function(parandus) {
       let re = new RegExp(parandus.f, 'g')
@@ -270,7 +298,6 @@ SECTIONS.forEach(function(section) {
   csvWrite(section, labels)
 })
 
-const crc32 = require('crc32');
 
 const parseRecord = function(section, record) {
   let isik = {

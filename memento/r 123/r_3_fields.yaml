@@ -8,7 +8,7 @@
   label: Perenimi
   default: ''
   ix: 1
-  re: "([^ ]+)"
+  re: "([^,]+)"
 - field: eesnimi
   label: Eesnimi
   default: ''

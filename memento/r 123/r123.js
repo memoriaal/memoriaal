@@ -22,9 +22,14 @@ const BOOKS = [
         "BOOK": "r_3",
         "FIRST_PAGE": 310,
         "LAST_PAGE": 824
+    },
+    {
+        "BOOK": "r_5",
+        "FIRST_PAGE": 26,
+        "LAST_PAGE": 728
     }
 ]
-let bnr = 1
+let bnr = 2
 
 const BOOK = BOOKS[bnr].BOOK
 const FIRST_PAGE = BOOKS[bnr].FIRST_PAGE
@@ -100,7 +105,8 @@ const readConvertedFile = function(filename) {
       // process.stdout.cursorTo(0)
       // process.stdout.write('page_number: ' + page_number)
       pages[page_number] = {n:page_number, lines:mergePage(raw_lines)}
-      // console.log(JSON.stringify(pages[page_number]), null, 4);
+      // console.log(pages[page_number].lines.join("\n"));
+      // process.exit(1)
       raw_lines = []
       return
     }
@@ -180,7 +186,6 @@ const mergePage = function(raw_lines) {
 
 
 const readRecords = function(pages) {
-
   const joinRows = function(record, line) {
     let re = /[^0-9]-$/
     if (record === '') { return line }
@@ -221,6 +226,10 @@ const readRecords = function(pages) {
     })
   })
   // console.log(JSON.stringify(records, null, 4))
+
+  console.log("==========");
+  // console.log(records.join("\n"));
+  // process.exit(1)
   parseRecords(records)
 }
 
@@ -241,6 +250,54 @@ const csvWrite = function csvWrite(isik) {
       })
       .join(', ') + '\n'
   )
+}
+
+
+const elasticsearch = require('elasticsearch')
+var esClient = new elasticsearch.Client({
+  host: 'elastic:changeme@localhost:9200'
+  // log: 'trace'
+})
+
+const queue = require('async/queue')
+var q = queue(function(task, callback) {
+  console.log('Start ' + task.id)
+  esClient.create(task, function(error, response) {
+    if (error) {
+      if (error.status === 409) {
+        console.log('Skip allready imported ' + task.id)
+        return callback(null)
+      }
+      if (error.status === 408) {
+        console.log('Timed out for ' + task.id)
+        q.push(task, callback)
+        return // callback next time
+      }
+      console.log('Failed ' + task.id)
+      return callback(error)
+    }
+    console.log('Inserted ' + task.id)
+    return callback(null)
+  })
+}, 5)
+q.drain = function() {
+  console.log('all items have been processed')
+}
+
+const save2db = function save2db(isik, callback) {
+  let create = {}
+  create.index = 'isikud'
+  create.type = 'isik'
+  create.id = isik.id
+  create.body = isik
+
+  // console.log('enqueue ', isik.id);
+  q.push(create, function(error) {
+    if (error) {
+      return callback(error)
+    }
+    return callback(null)
+  })
 }
 
 let labels = {}
@@ -277,7 +334,6 @@ const parseRecords = function(records) {
 }
 
 
-
 const crc32 = require('crc32');
 
 let unmatched = 0
@@ -301,4 +357,11 @@ const parseRecord = function(record) {
     console.log(++unmatched, 'Cant match', JSON.stringify({i:isik, re:RECORD_PARSER_STR}, null, 4))
   }
   csvWrite(isik)
+  save2db(isik, function(error) {
+    if (error) {
+      console.log(JSON.stringify(error, null, 4))
+    } else {
+      // console.log('created ', isik.id)
+    }
+  })
 }
