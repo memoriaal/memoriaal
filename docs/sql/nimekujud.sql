@@ -62,3 +62,16 @@ INNER JOIN r4n2 as r
 insert into isikukandidaadid
 select null, r.*, 'r4' from r4isikukandidaadid r
 ;
+
+
+-- sarnaste nimedega kirjete leidmiseks ja sidumiseks
+SELECT * FROM `isikukandidaadid` ik
+left join memoriaal.isikud i
+     on (i.eesnimi regexp ik.eesnimi or ik.eesnimi regexp i.eesnimi)
+    and (i.perenimi regexp ik.perenimi or ik.perenimi regexp i.perenimi)
+    and i.sünniaasta = ik.sünniaasta
+WHERE ik.`isikukood` IS NULL
+and ik.sünniaasta != 0000
+and i.id is not null
+order by ik.memento
+;
