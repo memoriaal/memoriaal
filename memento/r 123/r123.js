@@ -29,7 +29,7 @@ const BOOKS = [
         "LAST_PAGE": 728
     }
 ]
-let bnr = 2
+let bnr = 0
 
 const BOOK = BOOKS[bnr].BOOK
 const FIRST_PAGE = BOOKS[bnr].FIRST_PAGE
@@ -255,13 +255,13 @@ const csvWrite = function csvWrite(isik) {
 
 const elasticsearch = require('elasticsearch')
 var esClient = new elasticsearch.Client({
-  host: 'elastic:changeme@localhost:9200'
+  host: 'https://' + process.env.ES_CREDENTIALS + '@94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
   // log: 'trace'
 })
 
 const queue = require('async/queue')
 var q = queue(function(task, callback) {
-  console.log('Start ' + task.id)
+  // console.log('Start ' + task.id)
   esClient.create(task, function(error, response) {
     if (error) {
       if (error.status === 409) {
