@@ -155,6 +155,19 @@ union all select null
 , null as created
 , null as updated
 from mnm
+
+union all select null
+, sünniaasta as sünniaasta
+, surmaaasta as surmaaasta
+, perenimi as perenimi
+, eesnimi as eesnimi
+, isanimi as isanimi
+, 1 as kasHukkunud
+, 'metsavennad' as allikas
+, null as baaskirje
+, null as created
+, null as updated
+from v_metsavennad
 ;
 
 -- exact match
@@ -227,23 +240,82 @@ and i1.id not in (19930,21352,34413,21041,37171,47879,48176,48222,48681,66799,69
 update ohvrid r
 set isikukood = null;
 
-update ohvrid r
+update v_okumuuseum r
 left join isikud2 i
-  on  i.allikas = 'ohvrid'
+  on  i.allikas = 'okumuuseum'
   and i.eesnimi = r.eesnimi
   and i.perenimi = r.perenimi
   and i.isanimi = r.isanimi
-  and i.sünniaasta = r.sünd_aaaa
+  and i.sünniaasta = r.sünniaasta
   and i.kashukkunud = r.kashukkunud
---   and i.surmaaasta = r.surmaaasta
+  and i.surmaaasta = r.surmaaasta
 set r.isikukood = ifnull(i.baaskirje, i.id) 
 ;
-select count(1) from ohvrid where isikukood is null;
+
+select count(1) from v_okumuuseum where isikukood is null;
 
 update r2 set isanimi = '' where isanimi = 'eluk';
 
 
+-- Before export make sure max(isikukood) is used everywhere
+-- 
+-- check, if there are new unadjusted records
+select * from isikud2 where baaskirje < id;
+-- adjust new records
+update isikud2 i2
+right join isikud2 i1 on i1.baaskirje = i2.baaskirje 
+set i2.baaskirje = i1.id
+where i1.baaskirje < i1.id;
+-- apply latest id's
+update r1            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r2            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r3            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r4            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r5            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r6            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r7            r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r81           r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update r81_20        r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update v_metsavennad r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update v_okumuuseum  r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update mnm           r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update ohvrid        r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
+update parandused    r left join isikud2 i on i.id = r.isikukood set r.isikukood = i.baaskirje;
 
+
+create or replace table es_export as
+select i.baaskirje as id
+     , group_concat(distinct if(i.sünniaasta=0, null, i.sünniaasta) separator ';')                as sünniaasta
+     , group_concat(distinct if(i.surmaaasta=0, null, i.surmaaasta) separator ';')                as surmaaasta
+     , group_concat(distinct if(i.perenimi='' , null, i.perenimi)   separator ';')                as perenimi
+     , group_concat(distinct if(i.eesnimi=''  , null, i.eesnimi)    separator ';')                as eesnimi
+     , group_concat(distinct if(i.isanimi=''  , null, i.isanimi)    separator ';')                as isanimi
+     , max(i.kasHukkunud)                                                                         as kasHukkunud
+     , group_concat(distinct i.id separator ',')                                                  as isikukoodid
+     , group_concat(distinct concat(i.allikas, ': ', replace(k.kirje, '"', "'")) separator ';\n') as allikad
+from isikud2 i
+left join (
+            select isikukood, kirje,    'r1'            as allikas from r1
+  union all select isikukood, kirje,    'r2'            as allikas from r2
+  union all select isikukood, kirje,    'r3'            as allikas from r3
+  union all select isikukood, kirje,    'r4'            as allikas from r4
+  union all select isikukood, kirje,    'r5'            as allikas from r5
+  union all select isikukood, kirje,    'r6'            as allikas from r6
+  union all select isikukood, kirje,    'r7'            as allikas from r7
+  union all select isikukood, kirje,    'r81'           as allikas from r81
+  union all select isikukood, kirje,    'r81_20'        as allikas from r81_20
+  union all select isikukood, kirje,    'okumus'        as allikas from v_okumuuseum
+  union all select isikukood, kirje,    'mnm'           as allikas from mnm
+  union all select isikukood, kat,      'ohvrid'        as allikas from ohvrid
+  union all select isikukood, kirje,    'metsavennad'   as allikas from v_metsavennad
+  union all select isikukood, kirje,    'parandused'    as allikas from parandused
+) as k on k.isikukood = i.baaskirje and k.allikas = i.allikas and k.kirje != ''
+group by i.baaskirje
+;
+
+
+
+--- obsolete
 create or replace table es_export as
 select i.id
      , group_concat(distinct if(i.sünniaasta=0, null, i.sünniaasta) separator ';')  as sünniaasta
@@ -270,18 +342,19 @@ from isikud2 i1
 where i1.baaskirje is null
 ) i
 left join (
-            select isikukood, kirje, 'r1'            as allikas from r1
-  union all select isikukood, kirje, 'r2'            as allikas from r2
-  union all select isikukood, kirje, 'r3'            as allikas from r3
-  union all select isikukood, kirje, 'r4'            as allikas from r4
-  union all select isikukood, kirje, 'r5'            as allikas from r5
-  union all select isikukood, kirje, 'r6'            as allikas from r6
-  union all select isikukood, kirje, 'r7'            as allikas from r7
-  union all select isikukood, kirje, 'r81'           as allikas from r81
-  union all select isikukood, kirje, 'r81_20'        as allikas from r81_20
-  union all select isikukood, kirje, 'okumus'        as allikas from v_okumuuseum
-  union all select isikukood, kirje, 'mnm'           as allikas from mnm
-  union all select isikukood, kat,   'ohvrid'        as allikas from ohvrid
+            select isikukood, kirje,    'r1'            as allikas from r1
+  union all select isikukood, kirje,    'r2'            as allikas from r2
+  union all select isikukood, kirje,    'r3'            as allikas from r3
+  union all select isikukood, kirje,    'r4'            as allikas from r4
+  union all select isikukood, kirje,    'r5'            as allikas from r5
+  union all select isikukood, kirje,    'r6'            as allikas from r6
+  union all select isikukood, kirje,    'r7'            as allikas from r7
+  union all select isikukood, kirje,    'r81'           as allikas from r81
+  union all select isikukood, kirje,    'r81_20'        as allikas from r81_20
+  union all select isikukood, kirje,    'okumus'        as allikas from v_okumuuseum
+  union all select isikukood, kirje,    'mnm'           as allikas from mnm
+  union all select isikukood, kat,      'ohvrid'        as allikas from ohvrid
+  union all select isikukood, kirje,    'metsavennad'   as allikas from v_metsavennad
 ) as k on k.isikukood = i.id and k.allikas = i.allikas and k.kirje != ''
 group by i.id
 ;
@@ -289,3 +362,4 @@ create or replace view es_hukkunud as
   select * from es_export
   where kasHukkunud = 1
 ;
+

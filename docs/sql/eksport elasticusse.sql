@@ -6,6 +6,19 @@ AS SELECT
     `i`.`eesnimi` AS `eesnimi`,
     `i`.`isanimi` AS `isanimi`,
     `inf`.`kasHukkunud` AS `kasHukkunud`,
+    `inf`.`allikad` AS `allikad`
+FROM (`isikud` `i` left join `isikuinfo` `inf` on((`inf`.`id` = `i`.`id`))) where isnull(`i`.`baaskirje`);
+
+
+-- alternatiiv
+CREATE or replace VIEW `es_export`
+AS SELECT
+    `i`.`id` AS `id`,
+    `i`.`sünniaasta` AS `sünniaasta`,
+    `i`.`perenimi` AS `perenimi`,
+    `i`.`eesnimi` AS `eesnimi`,
+    `i`.`isanimi` AS `isanimi`,
+    `inf`.`kasHukkunud` AS `kasHukkunud`,
     replace(
       replace(
         replace(
