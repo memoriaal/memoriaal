@@ -1,5 +1,5 @@
-CREATE TABLE `isikud` (
-  `isikukood` bigint(12) unsigned NOT NULL AUTO_INCREMENT,
+CREATE or REPLACE TABLE `isikud` (
+  `isikukood` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `perenimi` varchar(50) DEFAULT NULL,
   `eesnimi` varchar(50) DEFAULT NULL,
   `isanimi` varchar(50) DEFAULT NULL,
@@ -8,22 +8,38 @@ CREATE TABLE `isikud` (
   `synnikoht` varchar(200) DEFAULT NULL,
   `surmakoht` varchar(200) DEFAULT NULL,
   `allikas` varchar(20) NOT NULL DEFAULT '',
+  `allika_id` varchar(20) DEFAULT NULL,
+  `kirje` text DEFAULT NULL,
   PRIMARY KEY (`isikukood`)
-) ENGINE=InnoDB AUTO_INCREMENT=100000000001 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1000000000 DEFAULT CHARSET=utf8;
 
-INSERT INTO `isikud` (`isikukood`, `perenimi`, `eesnimi`, `isanimi`, `synniaeg`, `surmaaeg`, `synnikoht`, `surmakoht`, `allikas`) VALUES ('100000000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '');
-DELETE FROM `isikud` WHERE `isikukood` IN ('100000000000');
-
-insert ignore into isikud 
-select 
-	  `rr_isikukood` as isikukood
-	, ifnull(`rr_perenimi`, UPPER(`f_perenimi`)) as perenimi
-	, ifnull(`rr_eesnimi`, UPPER(`f_eesnimi`)) as eesnimi
-	, ifnull(`rr_isanimi`, UPPER(`f_isanimi`)) as isanimi
-	, ifnull(`rr_synniaeg`, `f_sünd`) as synniaeg
-	, ifnull(`rr_surmaaeg`, `f_surm`) as surmaaeg
-	, `rr_synnikoht` as synnikoht
-	, `rr_surmakoht` as surmakoht
-	, 'RR' as allikas
+insert into isikud 
+select distinct
+    null as isikukood
+  , case when rr_perenimi = '' then UPPER(`f_perenimi`) else rr_perenimi end as perenimi
+  , case when rr_eesnimi = '' then UPPER(`f_eesnimi`) else rr_eesnimi end as eesnimi
+  , case when rr_isanimi = '' then UPPER(`f_isanimi`) else rr_isanimi end as isanimi
+  , case when rr_synniaeg = '' then `f_sünd` else rr_synniaeg end as synniaeg
+  , case when rr_surmaaeg = '' then `f_surm` else rr_surmaaeg end as surmaaeg
+  , `rr_synnikoht` as synnikoht
+  , `rr_surmakoht` as surmakoht
+  , 'RR' as allikas
+  , `rr_isikukood` as allika_id
+  , null as kirje
 from  allikad.RR20170517;
+
+insert into isikud 
+select distinct
+    null as isikukood
+  , UPPER(`perenimi`) as perenimi
+  , UPPER(`eesnimi`) as eesnimi
+  , null as isanimi
+  , case when `sünniaasta` = '0000' then null else `sünniaasta` end as synniaeg
+  , case when `surmaaasta` = '0000' then null else `surmaaasta` end as surmaaeg
+  , null as synnikoht
+  , null as surmakoht
+  , 'mnm' as allikas
+  , `id` as allika_id
+  , `kirje` as kirje
+from  allikad.mnm;
 

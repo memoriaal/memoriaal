@@ -1,0 +1,23 @@
+global:
+  - f: "58\-11, 15\+5\. \[ük\] ‘Z"
+    t: "58-11, 15+5. [ük]"
+  - f: "vt\.([^ ])"
+    t: "vt. $1"
+  - f: "NAGLAND, Alfred, Hindrek s\\. 15\\.05\\.10 vt Normet,"
+    t: "NAGLAND, Alfred, Hindrek s. 15.05.10 vt. Normet,"
+  - f: "OTS< Aleksander, Peeter"
+    t: "OTS, Aleksander, Peeter"
+line:
+  - f: "25398]IVANOV, Nikolai, Ivan"
+    t: "25398]\nIVANOV, Nikolai, Ivan"
+  - f: "(‘|’)Z"
+    t: "Ž"
+  - f: "(‘|’)z"
+    t: "ž"
+  - f: "Ž ŽELVIS, Erna, Alfred s. 12.11.22 vt. Tamm, Erna, Alfred. ŽEMTŠUŽIN"
+    t: "ŽELVIS, Erna, Alfred s. 12.11.22 vt. Tamm, Erna, Alfred .\nŽEMTŠUŽIN"
+split:
+  - f: "(vt\. [^\.]+)\. ([A-ZÕÄÖÜŠŽ]{3,})"
+    t: "$1 .\n$2"
+  - f: "(vt\. .+?) ([A-ZÕÄÖÜŠŽ]{3,})"
+    t: "$1 .\n$2"

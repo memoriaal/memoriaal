@@ -1,0 +1,26 @@
+---
+- field: id
+  label: ID
+  default: ''
+  ix:
+  re:
+- field: perenimi
+  label: Perenimi
+  default: ''
+  ix: 1
+  re: "<([^>]+)>, "
+- field: eesnimi
+  label: Eesnimi
+  default: ''
+  ix: 2
+  re: "<([^>]*)>, "
+- field: isanimi
+  label: Isanimi
+  default: ''
+  ix: 3
+  re: "<([^>]*)>.*"
+- field: kirje
+  label: Kirje
+  default: ''
+  ix:
+  re:
