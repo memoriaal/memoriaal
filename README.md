@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/memoriaal/memoriaal.png?label=ready&title=Ready)](https://waffle.io/memoriaal/memoriaal?utm_source=badge)
 # Memoriaali andmemudel
 
 ## Isik
