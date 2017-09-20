@@ -1,0 +1,196 @@
+{
+  "stats": {
+    "count": 55
+  },
+  "entities": [
+    {
+      "_id": "59bffbfcbaa79100012daaff",
+      "episodes": [
+        {
+          "_id": "59bffbfdbaa79100012dee2d",
+          "string": "1. 00:00 Isa arreteerimine, küüditamine\n2. 21:52 Loomavagunis\n3. 28:50 Tee Petserisse\n4. 35:17 Tee Pihkvasse\n5. 37:56 Peatus Karkatis\n6. 39:11 Tee Novosibirskisse\n7. 40:03 Laeval\n8. 42:33 Kargasokis\n9. 44:50 Taas laevale\n10. 48:44 Siberi külasse tööle\n11. 57:07 Esimene aasta Siberis ukrainlaste peres\n12. 01:01:24 Teine aasta Siberis ja nälja algus\n13. 01:10:20 Ema töö kalurina\n14. 01:15:02 Petseri jaamas kuuldud regilaul\n15. 01:21:43 Iseseisev elu ja külast põgenemine\n16. 01:36:36 Tee tagasi Eestisse\n17. 01:46:24 Märtsiküüditamine\n18. 01:49:10 Arreteerimine\n19. 01:56:19 Erinevates vanglates\n20. 02:10:10 Tagasi Kargasoki\n21. 02:17:50 Taas Eestisse\n22. 02:23:18 Märtsiküüditamise täpsustused\n23. 02:27:06 Kaadrid päevikust ja pildialbumist"
+        }
+      ]
+    },
+    {
+      "_id": "59bffbfcbaa79100012dab00"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dab11",
+      "episodes": [
+        {
+          "_id": "59bffbfdbaa79100012defdf",
+          "string": "1. 00:00-04:24 Vanemate põgenemislood\n2. 04:24 Küüditamine\n3. 05:40 Kanadasse emigreerumine\n4. 07:58 Esimesed aastad Kanadas\n5. 09:30 Eestluse mõju\n6. 12:00 Tartu College\n7. 17:40 Eesti ja inglise keel\n8. 20:52 Abikaasa ja laste tegemised\n9. 22:48 Eesti kool Kanadas\n10. 24:27 Rahvuslik identiteet\n11. 24:59 Eesti traditsioonid ja tähtpäevad\n12. 28:25 Esimene reis Eestisse\n13. 35:39 Teated Eestist\n14. 36:58 Saadetised Eestisse\n15. 40:00 Vanemate esimesed reisid Eestisse\n16. 43:49 Teine reis Eestisse\n17. 49:09 Vanemate mälestused Eesti ajast\n18. 52:30 Eestlaseks olemine ja eestluse komponendid\n19. 55:36 Eesti kultuur\n20. 57:28 Laulupeo tähendus\n21. 01:00:09 Huvitegevus Kanadas\n22. 01:01:25 Vanemate Eestist põgenemisest saadud mõjutused\n23. 01:04:53 Otsus Eestist põgenemiseks\n24. 01:10:50 Eesti tänapäeval"
+        }
+      ]
+    },
+    {
+      "_id": "59bffbfcbaa79100012dab12",
+      "episodes": [
+        {
+          "_id": "59bffbfdbaa79100012df01f",
+          "string": "1. 00:00:00-00:03:10 Küüditamisest pääsemine\n2. 00:03:10 Eestist põgenemise plaan\n3. 00:07:50 Kaasavõetud asjad\n4. 00;08:40 Põgenemine Saksamaale\n5. 00:12:10 Laevalolevate põgenike ja meeleolu kirjeldus\n6. 00:13:15 Eluolu Saksamaal\n7. 00:23:10 Elu USA tsoonis\n8. 00:26:38 Elu Geislingeni laagris\n9. 00:29:50 Emigreerumine ja teekond USAsse\n10. 00:33:55 Eluolu USAs\n11. 00:37:40 Ilvi isa saatus\n12. 00:43:20 Ilvi esimene reis Eestisse\n13. 00:48:15 Kogemused KGB-ga\n14. 00:50:20 Ilvi isa elulugu\n15. 00:55:05 Esimesed aastad USAs\n16. 01:12:30 Eesti identiteet\n17. 01:15:14 Eestisse tagasipöördumine"
+        }
+      ]
+    },
+    {
+      "_id": "59bffbfcbaa79100012dab13",
+      "episodes": [
+        {
+          "_id": "59bffbfdbaa79100012df066",
+          "string": "1. 00:00-03:31 Lapsepõlv\n2. 03:31 Baaside leping ja ema surm \n3. 08:07 1941. aasta küüditamine\n4. 21:40 Loomavagunis\n5. 41:27 Kohtumine vanaisa õega\n6. 45:39 Rongi ja laeva teekond\n7. 53:29 Perekonda elama asumine ja elu kolhoosisüsteemis\n8. 01:03:56 Talve üleelamine\n9. 01:05:31 Kool ja töö\n10. 01:07:45 Vanatädi surm\n11. 01:09:08 Töökohustused\n12. 01:23:31 Haigestumine ja põgenemine Narõni\n13. 01:39:58 Vene keel\n14. 01:41:34 Isa surm\n15. 01:46:13 Põgenemislugu\n16. 02:00:52 Arreteerimine Tomskis\n17. 02:05:56 Eestisse tagasi\n18. 02:09:48 Vendade saatused\n19. 02:28:51 Töö Eestis \n20. 02:32:30 Usk\n21. 02:47:17 14. juuni 1941\n22.  02:49:50 Kaadrid saadetud kirjadest, fotodest ja maalist"
+        }
+      ]
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad93"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad94"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad95"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad96"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad97"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad98"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad99"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad9a"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad9b"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad9d"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad9e"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dad9f"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada0"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada1"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada2"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada3"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada4"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada5"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada6"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada7"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada8"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dada9"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadaa"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadab"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadac"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadad"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadae"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadaf"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb0"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb1"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb2"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb3"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb4"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb5"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dadb6"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae5f"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae60"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae61"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae62"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae63"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae65"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae7c"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dae7d"
+    },
+    {
+      "_id": "59bffbfcbaa79100012daea0"
+    },
+    {
+      "_id": "59bffbfcbaa79100012dafd0"
+    },
+    {
+      "_id": "59bffbfcbaa79100012db4a5"
+    },
+    {
+      "_id": "59bffbfcbaa79100012db4dc"
+    },
+    {
+      "_id": "59bffbfcbaa79100012db563"
+    },
+    {
+      "_id": "59bffbfcbaa79100012db5a9"
+    },
+    {
+      "_id": "59bffbfcbaa79100012db5f1"
+    }
+  ]
+}
