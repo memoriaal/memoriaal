@@ -1,6 +1,6 @@
 DELIMITER ;;
 CREATE or replace PROCEDURE `create_connections`(IN ik1 CHAR(10), IN seoseliik VARCHAR(50), IN ik2 CHAR(10))
-BEGIN
+proc_label:BEGIN
     DECLARE msg VARCHAR(200);
     DECLARE _ik1 CHAR(10);
     DECLARE _ik2 CHAR(10);
@@ -22,13 +22,20 @@ BEGIN
            UNION ALL SELECT ik2) j2 ON 1=1 ;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
 
+    IF seoseliik = '' OR seoseliik IS NULL THEN
+        SET seoseliik = 'sama isik';
+    END IF;
+
+    SELECT count(1) INTO @cnt FROM seosed WHERE isikukood1 = ik1 AND seos = seoseliik AND isikukood2 = ik2;
+    IF @cnt > 0 THEN
+        SELECT CONCAT( 'See seos on juba olemas, nuh.' ) INTO msg;
+        SIGNAL SQLSTATE '02100' SET MESSAGE_TEXT = msg;
+        LEAVE proc_label;
+    END IF;
+
     IF ik1 = ik2 THEN
         SELECT CONCAT( 'Ei hakka iseenda vahel seost looma, nuh.' ) INTO msg;
         SIGNAL SQLSTATE '03100' SET MESSAGE_TEXT = msg;
-    END IF;
-
-    IF seoseliik = '' OR seoseliik IS NULL THEN
-        SET seoseliik = 'sama isik';
     END IF;
 
     IF seoseliik = 'sama isik' OR seoseliik = 'kahtlusseos' OR seoseliik = 'abikaasa' THEN
@@ -43,9 +50,11 @@ BEGIN
         IF finished = 1 THEN
             LEAVE read_loop;
         END IF;
+        IF _ik1 = _ik2 THEN
+            ITERATE read_loop;
+        END IF;
 
         IF seoseliik = 'sama isik' THEN
-            -- CALL validate_checklist(ik1, ik2);
             INSERT INTO `z_queue` (`isikukood1`, `isikukood2`, `task`, `params`)
             VALUES (_ik1, _ik2, 'propagate checklist', '');
         END IF;

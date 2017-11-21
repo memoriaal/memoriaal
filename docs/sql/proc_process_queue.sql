@@ -1,8 +1,3 @@
-CREATE OR REPLACE EVENT `process_queue`
-    ON SCHEDULE EVERY 10 SECOND STARTS '2017-11-19 01:00:00'
-    ON COMPLETION PRESERVE ENABLE
-    DO CALL process_queue();
-
 DELIMITER ;;
 CREATE OR REPLACE PROCEDURE process_queue()
 BEGIN
@@ -28,7 +23,7 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        IF params LIKE '%validate_checklist%' THEN
+        IF _params LIKE '%validate_checklist%' THEN
             CALL validate_checklist(_ik1, _ik2);
         END IF;
         IF _task = 'propagate checklist' THEN
@@ -48,3 +43,8 @@ BEGIN
 
 END;;
 DELIMITER ;
+
+CREATE OR REPLACE EVENT `process_queue`
+    ON SCHEDULE EVERY 10 SECOND STARTS '2017-11-19 01:00:00'
+    ON COMPLETION PRESERVE ENABLE
+    DO CALL process_queue();
