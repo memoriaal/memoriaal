@@ -1,6 +1,8 @@
 DELIMITER ;;
 CREATE OR REPLACE TRIGGER kirjed_BU BEFORE UPDATE ON kirjed FOR EACH ROW BEGIN
 
+    DECLARE msg VARCHAR(200);
+
     IF !ISNULL(NEW.seos)
     THEN
         IF NEW.seoseliik = '-'
@@ -46,6 +48,22 @@ CREATE OR REPLACE TRIGGER kirjed_BU BEFORE UPDATE ON kirjed FOR EACH ROW BEGIN
     END IF;
 
     -- Kivi ja Mittekivi välistavad teineteist
+    IF NEW.kivi = '!' AND NEW.mittekivi = '!'
+    THEN
+        SELECT CONCAT( NEW.isikukood,
+            ': KIVI ja MITTEKIVI ei saa korraga olla!' ) INTO msg;
+        SIGNAL SQLSTATE '03100' SET MESSAGE_TEXT = msg;
+    END IF;
+
+    -- Kivi ja MR välistavad teineteist
+    IF NEW.kivi = '!' AND NEW.MR = '!'
+    THEN
+        SELECT CONCAT( NEW.isikukood,
+            ': KIVI ja MR ei saa korraga olla!' ) INTO msg;
+        SIGNAL SQLSTATE '03100' SET MESSAGE_TEXT = msg;
+    END IF;
+
+    -- Kivi ja Mittekivi välistavad teineteist
     IF NEW.kivi != OLD.kivi AND NEW.kivi = '!'
     THEN
         SET NEW.mittekivi = '';
@@ -78,7 +96,7 @@ CREATE OR REPLACE TRIGGER kirjed_BU BEFORE UPDATE ON kirjed FOR EACH ROW BEGIN
     THEN
         SELECT count(1) into @cnt FROM seosed WHERE isikukood1 = NEW.isikukood AND seos = 'sama isik';
         IF @cnt > 0 THEN
-            INSERT INTO `z_queue` (`isikukood1`, `isikukood2`, `task`, `params`)
+            INSERT INTO z_queue (isikukood1, isikukood2, task, params)
             VALUES (NEW.isikukood, null, 'propagate checklists', '');
         END IF;
     END IF;
