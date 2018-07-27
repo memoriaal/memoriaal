@@ -33,3 +33,4 @@ memento/r3/r_3.txt
 
 *.pdf
 memento import/r6/pages
+*.DS_Store

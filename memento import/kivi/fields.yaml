@@ -1,0 +1,11 @@
+---
+- field: id
+  label: ID
+  default: ''
+  ix:
+  re:
+- field: kirje
+  label: Kirje
+  default: ''
+  ix:
+  re:
