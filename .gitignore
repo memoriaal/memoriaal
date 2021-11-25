@@ -1,37 +1,23 @@
 
 memento/in/memento.yaml
-
 memento/memento.yaml
-
 memento/hukkunud.yaml
-
 memento/rich_memento.yaml
-
 memento/r6/memento.yaml
-
 memento/r6/rich_memento.yaml
-
 memento/r7/isikud.csv
-
 memento/r5/isikud.csv
-
 memento/r1/isikud.csv
-
 memento/r1/r_1.txt
-
 memento/r5/r_5.txt
-
 memento/r2/isikud.csv
-
 memento/r2/r_2.txt
+memento/r3/r_3.txt
+memento import/r6/pages
+memento import/temp.json
 
 *.xls
-
-memento/r3/r_3.txt
-
 *.csv
-
 *.pdf
-memento import/r6/pages
 *.DS_Store
-memento import/temp.json
+
