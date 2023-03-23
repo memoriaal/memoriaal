@@ -20,7 +20,3 @@ memento import/temp.json
 *.csv
 *.pdf
 *.DS_Store
-
-book-of-dead/node_modules
-book-of-dead/.git
-book-of-dead/*.json
