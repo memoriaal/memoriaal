@@ -112,11 +112,11 @@ class Record {
         let martialStatusLine = false
         for (let i = 1; i < this.lines.length; i++) {
             let line = this.lines[i]
-            if (line.match(/Dead/)) {
+            if (line.match(/^Dead/)) {
                 this.dead = transformDate(line)
                 continue
             }
-            if (line.match(/Born/)) {
+            if (line.match(/^Born/)) {
                 this.born = transformDate(line)
                 martialStatusLine = true
                 continue
