@@ -1,11 +1,17 @@
+
 const fs = require("fs")
 const path = require("path")
+// To convert PDF to JSON, use library pdf-parse
 const pdf = require("pdf-parse")
+// To convert JSON to CSV, use library json2csv
+const json2csv = require('json2csv').parse
 
-// const docName = 'Swedish_Death_Index_1987_2020'
-const docName = 'Swedish_Death_Index_1830_1986'
+
+const docName = 'Swedish_Death_Index_1987_2020'
+// const docName = 'Swedish_Death_Index_1830_1986'
 const input = path.join(__dirname, docName + '.pdf')
-const output = path.join(__dirname, docName + '.json')
+const out2JSON = path.join(__dirname, docName + '.json')
+const out2CSV = path.join(__dirname, docName + '.csv')
 
 // Read the PDF file
 var dataBuffer = fs.readFileSync(input)
@@ -62,8 +68,18 @@ pdf(dataBuffer).then(function(data) {
     record.parse()
     console.log("Found " + records.length + " records")
 
-    var jsonText = JSON.stringify(records, null, 2)
-    fs.writeFileSync(output, jsonText)
+    let jsonText = JSON.stringify(records, null, 2)
+    fs.writeFileSync(out2JSON, jsonText)
+
+    // convert JSON to CSV
+    const fields = ['id', 'code', 'surname', 'forename', 'dead', 'born', 'martialStatus', 'lines']
+    const opts = { fields }
+    try {
+        const csv = json2csv(records, opts)
+        fs.writeFileSync(out2CSV, csv)
+    }   catch (err) {
+        console.error(err)
+    }
 })
 
 class Record {
