@@ -85,7 +85,6 @@ pdf(dataBuffer).then(function(data) {
 class Record {
     constructor(code) {
         this.id = ""
-        // this.name = ""
         this.code = code
         this.surname = ""
         this.forename = ""
@@ -99,9 +98,6 @@ class Record {
         if (this.lines.length === 0) {
             return
         }
-        // this.name = this.lines[0]
-        // console.log("Parsing ", this)
-        // split name into surname and forename
         let nameParts = this.lines[0].split(",")
         if (nameParts.length > 1) {
             this.surname = nameParts[0].trim()
