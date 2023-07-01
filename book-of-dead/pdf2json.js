@@ -7,7 +7,12 @@ const pdf = require("pdf-parse")
 const json2csv = require('json2csv').parse
 
 
-const docName = 'Swedish_Death_Index_1987_2020'
+// const docName = 'Swedish_Death_Index_ryssland1'
+// const docName = 'Swedish_Death_Index_ryssland2'
+// const docName = 'Swedish_Death_Index_lettland'
+// const docName = 'comment_estland_kuni_84'
+const docName = 'comment_estland_84_kuni'
+// const docName = 'Swedish_Death_Index_1987_2020'
 // const docName = 'Swedish_Death_Index_1830_1986'
 const input = path.join(__dirname, docName + '.pdf')
 const out2JSON = path.join(__dirname, docName + '.json')
@@ -41,13 +46,24 @@ pdf(dataBuffer).then(function(data) {
     let records = []
     let record = new Record()
     let mark = false
-    const separatorRe = /^\d{4}[‐\d]+$/
+    let readyForRecordId = true
+    const separatorRe = /^\d{4}[‐-\d]+$/
     const recordIdRe = /^Record\sID:/
 
+    console.log("Found " + lines.length + " lines")
     for (let i = 0; i < lines.length; i++) {
+        // if (i % 1000 === 0) {
+        //     console.log("Processing line " + i)
+        // }
+        // if (i === 1000) {
+        //     return
+        // }
         let line = lines[i].trim()
+        // console.log(`line ${i}: "${line}"`)
 
-        if (line.match(separatorRe)) {
+        if (readyForRecordId && line.match(separatorRe)) {
+            // console.log("Found separator")
+            readyForRecordId = false
             record.parse()
             record = new Record(line)
             records.push(record)
@@ -56,10 +72,13 @@ pdf(dataBuffer).then(function(data) {
 
         if (mark) {
             mark = false
+            readyForRecordId = true
             record.id = line
+            // console.log("Found record id: " + line)
             continue
         }
         if (line.match(recordIdRe)) {
+            // console.log("Found record id mark on line " + i)
             mark = true
             continue
         }
