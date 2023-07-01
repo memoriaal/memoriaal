@@ -20,3 +20,7 @@ memento import/temp.json
 *.csv
 *.pdf
 *.DS_Store
+persons.json
+familysearch/persons_USA.json
+familysearch/persons-2000.json
+familysearch/persons copy.json
