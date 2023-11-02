@@ -9,19 +9,32 @@
 const fs = require("fs")
 const path = require("path")
 
-const personsFile = path.join(__dirname, "persons.json")
-const persons = JSON.parse(fs.readFileSync(personsFile))
+const deathPlace = "5"
+const birthPlace = "Estonia"
+
+const personsFilename = `persons_${deathPlace}_${new Date().toISOString().slice(0, 10)}`
+const personsJsonFile = path.join(__dirname, `${personsFilename}.json`)
+const personsCsvFile = path.join(__dirname, `${personsFilename}.csv`)
+if (!fs.existsSync(personsJsonFile)) fs.writeFileSync(personsJsonFile, "{}")
+if (!fs.existsSync(personsCsvFile)) fs.writeFileSync(personsCsvFile, "")
+const persons = JSON.parse(fs.readFileSync(personsJsonFile))
 
 const pageSize = 100
 const minOffset = 0
-const maxOffset = 5800
+const maxOffset = 1200
 // const maxOffset = 31000
 
-const url = `https://www.familysearch.org/service/search/hr/v2/personas?c.deathLikePlace1=on&count=${pageSize}&f.deathLikePlace0=3&m.defaultFacets=on&m.facetNestCollectionInCategory=on&m.queryRequireDefault=on&offset={{offset}}&q.birthLikeDate.from=1870&q.birthLikeDate.to=1945&q.birthLikePlace=Estonia`
+const params =
+`count=${pageSize}&q.birthLikeDate.from=1870&q.birthLikeDate.to=1945&q.birthLikePlace=${birthPlace}&c.deathLikePlace1=on&f.deathLikePlace0=${deathPlace}`
+
+const url = `https://www.familysearch.org/service/search/hr/v2/personas?${params}&m.defaultFacets=on&m.facetNestCollectionInCategory=on&m.queryRequireDefault=on&offset={{offset}}`
+
+// c.deathLikePlace1=on&count=${pageSize}&f.deathLikePlace0=${deathPlace}&m.defaultFacets=on&m.facetNestCollectionInCategory=on&m.queryRequireDefault=on&offset={{offset}}&q.birthLikeDate.from=1870&q.birthLikeDate.to=1945&q.birthLikePlace=${birthPlace}`
+
 
 const headers = {
     "Accept": "application/json, text/plain, */*",
-    "Authorization": "Bearer e631e934-5102-419c-9e06-2663896793a8-prod",
+    "Authorization": "Bearer p0-pcILvDzMAOU.U_NdACA4Xfb",
     "Referer": "https://www.familysearch.org",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
 }
@@ -64,7 +77,7 @@ async function fetchPage() {
         console.log(`merging ${Object.keys(newPersons).length} persons to existing ${Object.keys(persons).length}`)
         Object.assign(persons, newPersons)
         console.log(`total persons: ${Object.keys(persons).length}`)
-        fs.writeFileSync(personsFile, JSON.stringify(persons, null, 2))
+        fs.writeFileSync(personsJsonFile, JSON.stringify(persons, null, 2))
 
         console.log(`fetched page ${offset/pageSize + 1}`)
         // wait for a second
@@ -75,11 +88,10 @@ async function fetchPage() {
 // convert persons.json to persons.csv
 function saveAsCsv() {
     // read persons.json
-    const persons = JSON.parse(fs.readFileSync(personsFile))
+    const persons = JSON.parse(fs.readFileSync(personsJsonFile))
     const createCsvWriter = require('csv-writer').createObjectCsvWriter
-    const personsCSV = path.join(__dirname, "persons.csv")
     const csvWriter = createCsvWriter({
-        path: personsCSV,
+        path: personsCsvFile,
         header: [
             {id: 'gender', title: 'GENDER'},
             {id: 'birthDate', title: 'BIRTH_DATE'},
@@ -99,6 +111,7 @@ function saveAsCsv() {
     })
 }
 
-saveAsCsv()
 
-// fetchPage()
+fetchPage()
+
+saveAsCsv()
